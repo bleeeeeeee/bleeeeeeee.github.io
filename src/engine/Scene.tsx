@@ -21,36 +21,25 @@ export class Scene extends React.Component {
 
     public componentDidMount = () => {
 
-        if (this.canvasRef.current === null) return;
-
         const canvas = this.canvasRef.current;
-        this.viewGL = new ViewGL(canvas);
-        
-        // Idk why, but without it canvas is only a small rectangle        
-        this.viewGL.onWindowResize(innerWidth, innerHeight);
+        this.viewGL = new ViewGL(canvas ?? undefined);
 
-        window.addEventListener("mousemove", this.mouseMove);
-        window.addEventListener("resize", this.handleResize);
+        this.viewGL.onInitialization();
 
     };
 
-    public componentDidUpdate = () => {
-
-    };
+    // Maybe make something with that
+    public componentDidUpdate = () => {};
 
     public componentWillUnmount = () => {
 
-        window.removeEventListener("mousemove", this.mouseMove);
-        window.removeEventListener("resize", this.handleResize);
+        this.viewGL.onDestruction();
 
     };
-
-    public mouseMove    = () => this.viewGL.onMouseMove();
-    public handleResize = () => this.viewGL.onWindowResize(innerWidth, innerHeight);
-
+    
     public render = (): JSX.Element => (
-        <div className='canvasContainer'>
-            <canvas ref={this.canvasRef}/>
+        <div className="canvas-container">
+            <canvas className="canvas-three" ref={this.canvasRef}/>
         </div>
     );
 

@@ -1,6 +1,8 @@
 import * as THREE from "three";
 
-export class ViewGL {
+import { WindowEvents } from "./WindowEvents";
+
+export class ViewGL implements WindowEvents {
 
     private readonly renderer: THREE.WebGLRenderer;
 
@@ -9,12 +11,13 @@ export class ViewGL {
 
     private readonly cube: THREE.Mesh;
 
-    constructor(canvasRef: HTMLCanvasElement) {
+    constructor(canvasRef?: HTMLCanvasElement) {
 
         this.renderer = new THREE.WebGLRenderer({
             canvas: canvasRef,
             antialias: true,
         });
+        this.renderer.setSize(innerWidth, innerHeight);
 
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(75, (innerWidth / innerHeight), 0.1, 1000);
@@ -22,7 +25,7 @@ export class ViewGL {
         this.scene.add(this.camera);
 
         const goemetry = new THREE.BoxGeometry(1, 1, 1);
-        const material = new THREE.MeshNormalMaterial({  });
+        const material = new THREE.MeshNormalMaterial({ });
 
         this.cube = new THREE.Mesh(goemetry, material);
         this.scene.add(this.cube);
@@ -31,20 +34,28 @@ export class ViewGL {
 
     }
 
-    public updateValue = (value: number) => {
+    public onInitialization = () => {
+
+        window.addEventListener("mousemove", this.onMouseMove);
+        window.addEventListener("resize", this.onWindowResize);
 
     };
 
-    public onMouseMove = () => {
+    public onDestruction = () => {
+
+        window.removeEventListener("mousemove", this.onMouseMove);
+        window.removeEventListener("resize", this.onWindowResize);
 
     };
 
-    public onWindowResize = (newWidth: number, newHeight: number) => {
+    public onMouseMove = () => {};
 
-        this.camera.aspect = newWidth / newHeight;
+    public onWindowResize = () => {
+
+        this.camera.aspect = innerWidth / innerHeight;
         this.camera.updateProjectionMatrix();
 
-        this.renderer.setSize(newWidth, newHeight);
+        this.renderer.setSize(innerWidth, innerHeight);
 
     };
 
