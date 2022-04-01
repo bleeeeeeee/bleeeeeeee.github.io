@@ -1,5 +1,6 @@
 import * as THREE from "three";
 
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { WindowEvents } from "./WindowEvents";
 
 export class ViewGL implements WindowEvents {
@@ -10,6 +11,8 @@ export class ViewGL implements WindowEvents {
     private readonly camera: THREE.PerspectiveCamera;
 
     private readonly cube: THREE.Mesh;
+
+    private readonly orbitControls: OrbitControls;
 
     constructor(canvasRef?: HTMLCanvasElement) {
 
@@ -29,6 +32,9 @@ export class ViewGL implements WindowEvents {
 
         this.cube = new THREE.Mesh(goemetry, material);
         this.scene.add(this.cube);
+
+        this.orbitControls = new OrbitControls(this.camera, this.renderer.domElement);
+        this.orbitControls.enablePan = false;
 
         this.renderer.setAnimationLoop(this.tick);
 
