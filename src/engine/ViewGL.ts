@@ -1,5 +1,7 @@
 import * as THREE from "three";
 
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+
 export class ViewGL {
 
     private readonly renderer: THREE.WebGLRenderer;
@@ -8,6 +10,8 @@ export class ViewGL {
     private readonly camera: THREE.PerspectiveCamera;
 
     private readonly cube: THREE.Mesh;
+
+    private readonly orbitControls: OrbitControls;
 
     constructor(canvasRef: HTMLCanvasElement) {
 
@@ -26,6 +30,9 @@ export class ViewGL {
 
         this.cube = new THREE.Mesh(goemetry, material);
         this.scene.add(this.cube);
+
+        this.orbitControls = new OrbitControls(this.camera, this.renderer.domElement);
+        this.orbitControls.enablePan = false;
 
         this.renderer.setAnimationLoop(this.tick);
 
