@@ -1,19 +1,14 @@
-.overlay {
-
-    /* Overlay, okay? */
-    position: fixed;
-
-    /* Has to take up entire screen */
+.inner-overlay {
+    margin: auto;
     width: 100%;
-    height: 100%;
-
-    /* Centered (vertically and horizontally) objects inside */
+    max-width: 600px;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
+}
 
-    pointer-events: none;
-
+.overlay-active-item {
+    pointer-events: all;
 }
 
 .white-text {
@@ -23,4 +18,10 @@
 .pretty-text {
     font-family: Fira Code;
     font-size: 4rem;
+    margin: 0;
+    margin-bottom: 5%;
+}
+
+.click-button {
+    padding: 2%;
 }

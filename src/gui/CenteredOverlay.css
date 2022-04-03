@@ -1,0 +1,17 @@
+.centered-overlay {
+
+    /* Overlay, okay? */
+    position: fixed;
+
+    /* Has to take up entire screen */
+    width: 100%;
+    height: 100%;
+
+    /* Centered (vertically and horizontally) objects inside */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    pointer-events: none;
+
+}
