@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 
 import "./CenteredOverlay.css";
 
@@ -10,7 +10,7 @@ interface CenteredOverlayProps {
 
 export class CenteredOverlay extends React.Component<CenteredOverlayProps> {
 
-    public render = (): React.ReactNode => (
+    public render = (): ReactNode => (
         <div className="centered-overlay">{this.props.children}</div>
     );
 

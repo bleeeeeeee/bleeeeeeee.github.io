@@ -13,7 +13,8 @@
     "dependencies": {
         "react": "^18.0.0",
         "react-dom": "^18.0.0",
-        "three": "^0.139.0"
+        "three": "^0.139.0",
+        "ts-md5": "^1.2.11"
     },
     "devDependencies": {
         "@types/react": "^17.0.43",

@@ -1,16 +1,18 @@
 import React from "react";
 
 import { CenteredOverlay } from "./CenteredOverlay";
+import { stringHash } from "../utility/StringHash";
 
 import "./Overlay.css";
 
-const LSKEY_BUTTON_COUNT = "overlay.buttonCount";
+const LS_KEYS = {
 
-interface OverlayProps {
+    "overlay.buttonCount":  stringHash("overlay.buttonCount"),
+    "overlay.refreshCount": stringHash("overlay.refreshCount"),
 
-    text: string;
+};
 
-}
+interface OverlayProps {}
 
 interface OverlayStates {
 
@@ -23,14 +25,24 @@ export class Overlay extends React.Component<
     OverlayStates
 > {
 
+    private readonly refreshCount: number;
+
     public constructor(props: OverlayProps) {
 
         super(props);
         this.state = {
-            count: JSON.parse(localStorage.getItem(LSKEY_BUTTON_COUNT) ?? "0"),
+            count: JSON.parse(localStorage.getItem(LS_KEYS["overlay.buttonCount"]) ?? "0"),
         };
 
+        this.refreshCount = JSON.parse(localStorage.getItem(LS_KEYS["overlay.refreshCount"]) ?? "0");
+
     }
+
+    public componentDidMount = () => {
+
+        localStorage.setItem(LS_KEYS["overlay.refreshCount"], JSON.stringify(this.refreshCount + 1));
+
+    };
 
     private onButtonClick = () => {
 
@@ -41,7 +53,7 @@ export class Overlay extends React.Component<
         // +1 +1 +1 ++1! +!!1
         // No pok*rwi mnie z tym zaraz, dlaczego to normalnie nie dziala?
         // Dlaczego jak pare linijek temu to aktualizuje, a to dalej nie dziala.
-        localStorage.setItem(LSKEY_BUTTON_COUNT, JSON.stringify(this.state.count + 1));
+        localStorage.setItem(LS_KEYS["overlay.buttonCount"], JSON.stringify(this.state.count + 1));
 
     };
 
@@ -49,7 +61,7 @@ export class Overlay extends React.Component<
         <CenteredOverlay>
             <div className="inner-overlay">
 
-                <p className={"white-text pretty-text"}>
+                <p className={"white-text pretty-text large-text"}>
                     Count: {this.state.count}
                 </p>
 
@@ -57,6 +69,10 @@ export class Overlay extends React.Component<
                     className={"click-button overlay-active-item"}
                     onClick={() => this.onButtonClick() }
                 >Click Me!</button>
+
+                <p className={"white-text pretty-text corner-text"}>
+                    Refresh count: {this.refreshCount}
+                </p>
 
             </div>
         </CenteredOverlay>

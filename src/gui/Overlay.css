@@ -17,9 +17,19 @@
 
 .pretty-text {
     font-family: Fira Code;
-    font-size: 4rem;
     margin: 0;
     margin-bottom: 5%;
+}
+
+.large-text {
+    font-size: 4rem;
+}
+
+.corner-text {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    margin: 1%;
 }
 
 .click-button {
