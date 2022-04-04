@@ -40,20 +40,27 @@ export class Overlay extends React.Component<
 
     public componentDidMount = () => {
 
-        localStorage.setItem(LS_KEYS["overlay.refreshCount"], JSON.stringify(this.refreshCount + 1));
+        localStorage.setItem(
+            LS_KEYS["overlay.refreshCount"],
+            JSON.stringify(this.refreshCount + 1)
+        );
+
+    };
+
+    public componentDidUpdate = () => {
+
+        localStorage.setItem(
+            LS_KEYS["overlay.buttonCount"],
+            JSON.stringify(this.state.count)
+        );
 
     };
 
     private onButtonClick = () => {
 
-        this.setState({
-            count: this.state.count + 1,
-        });
-
-        // +1 +1 +1 ++1! +!!1
-        // No pok*rwi mnie z tym zaraz, dlaczego to normalnie nie dziala?
-        // Dlaczego jak pare linijek temu to aktualizuje, a to dalej nie dziala.
-        localStorage.setItem(LS_KEYS["overlay.buttonCount"], JSON.stringify(this.state.count + 1));
+        this.setState((state) => ({
+            count: state.count + 1,
+        }));
 
     };
 
