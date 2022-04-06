@@ -28,7 +28,7 @@ const getReactRoot = (): JSX.Element => (
  */
 const renderReact17 = (container: ReactContainer) => {
 
-    ReactDOM17.render(getReactRoot(), document.getElementById("root"));
+    ReactDOM17.render(getReactRoot(), container);
 
 };
 
