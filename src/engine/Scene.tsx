@@ -1,23 +1,37 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { ViewGL } from "./ViewGL";
+
+export const _Scene = () => {
+
+    const canvasRef = React.createRef<HTMLCanvasElement>();
+
+    React.useEffect(() => {
+
+        const threeApplication = new ViewGL(canvasRef.current ?? undefined);
+        threeApplication.onInitialization();
+
+        return () => {
+
+            threeApplication.onDestruction();
+
+        };
+
+    }, []);
+
+    return (
+        <div className="canvas-container">
+            <canvas className="canvas-three" ref={canvasRef}/>
+        </div>
+    );
+
+};
 
 export class Scene extends React.Component {
 
     private readonly canvasRef = React.createRef<HTMLCanvasElement>();
 
     private viewGL: ViewGL;
-
-    /*constructor(props: any) {
-
-        super(props);
-
-        this.canvasRef = React.createRef();
-
-        // tsconfig.json:["strictPropertyInitialization": true]
-        // this.viewGL = new ViewGL(this.canvasRef.current);
-
-    }*/
 
     public componentDidMount = () => {
 
@@ -44,46 +58,3 @@ export class Scene extends React.Component {
     );
 
 }
-
-/*function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>Hello Vite + React!</p>
-        <p>
-          <button type="button" onClick={() => setCount((count) => count + 1)}>
-            count is: {count}
-          </button>
-        </p>
-        <p>
-          Edit <code>App.tsx</code> and save to test HMR updates.
-        </p>
-        <p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-          {' | '}
-          <a
-            className="App-link"
-            href="https://vitejs.dev/guide/features.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Vite Docs
-          </a>
-        </p>
-      </header>
-    </div>
-  )
-
-    
-
-}*/
