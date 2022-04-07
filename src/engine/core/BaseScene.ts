@@ -9,12 +9,13 @@
  export interface UpdateParameters {
  
      deltaTime: number;
+     sceneTime: number;
      totalTime: number;
  
  }
  
- export interface RenderParameters {}
- export interface InitializeParameters {}
+ export interface RenderParameters { }
+ export interface InitializeParameters { }
  
  export type InitializeMethod = (paramters: InitializeParameters) => Promise<void>;
  
@@ -48,10 +49,10 @@
  
      public removeAll = () => this.remove(this, ...this.children);
  
-     public initialize: InitializeMethod = async () => {};
+     public onInitialization: InitializeMethod = async () => { };
  
-     public udpate: UpdateMethod = () => {};
-     public render: RenderMethod = () => {};
+     public onUpdate: UpdateMethod = () => { };
+     public onRender: RenderMethod = () => { };
  
  }
  

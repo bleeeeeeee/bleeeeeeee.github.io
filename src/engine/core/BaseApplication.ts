@@ -1,4 +1,6 @@
 import * as THREE from "three";
+import { BaseScene } from "./BaseScene";
+
 import { SceneManager } from "./SceneManager";
 
 interface IBaseApplication {
@@ -12,7 +14,10 @@ export class BaseApplication implements IBaseApplication {
     protected readonly renderer: THREE.WebGLRenderer;
     protected readonly sceneManager: SceneManager;
 
+    private lastFrameScene?: BaseScene = undefined;
+
     private deltaTime = 0;
+    private sceneTime = 0;
     private lastTime  = 0;
 
     public constructor(
@@ -37,12 +42,18 @@ export class BaseApplication implements IBaseApplication {
         this.deltaTime = (time - this.lastTime) / 1000;
         this.lastTime = time;
 
-        this.sceneManager.getCurrent()?.udpate({
+        this.sceneTime = this.lastFrameScene == this.sceneManager.getCurrent()
+            ? this.sceneTime += this.deltaTime : 0;
+
+        this.lastFrameScene = this.sceneManager.getCurrent();
+
+        this.sceneManager.getCurrent()?.onUpdate({
             deltaTime: this.deltaTime,
+            sceneTime: 0,
             totalTime: time,
         });
 
-        this.sceneManager.getCurrent()?.render({
+        this.sceneManager.getCurrent()?.onRender({
             //renderer: this.renderer,
         });
 

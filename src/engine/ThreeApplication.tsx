@@ -1,23 +1,24 @@
 import React from "react";
 
-interface ThreeApplicationProps {
+export const ThreeApplication = () => {
 
-}
+    const canvasRef = React.createRef<HTMLCanvasElement>();
 
-export class ThreeApplication extends React.Component<ThreeApplicationProps> {
+    React.useEffect(() => {
 
-    private readonly canvasRef: React.RefObject<HTMLCanvasElement>;
+        const threeApplication = new ViewGL(canvasRef.current ?? undefined);
+        threeApplication.onInitialization();
 
-    public constructor(props: ThreeApplicationProps) {
+        return () => {
 
-        super(props);
+            threeApplication.onDestruction();
 
-        this.canvasRef = React.createRef();
+        };
 
-    }
+    }, []);
 
-    public render = () => (
-        <canvas ref={this.canvasRef}></canvas>
+    return (
+        <canvas className="canvas-three" ref={canvasRef} />
     );
 
-}
+};
