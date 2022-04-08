@@ -3,13 +3,7 @@ import { BaseScene } from "./BaseScene";
 
 import { SceneManager } from "./SceneManager";
 
-interface IBaseApplication {
-
-    initialize: () => Promise<void>;
-
-}
-
-export class BaseApplication implements IBaseApplication {
+export class BaseApplication {
 
     protected readonly renderer: THREE.WebGLRenderer;
     protected readonly sceneManager: SceneManager;
@@ -20,8 +14,10 @@ export class BaseApplication implements IBaseApplication {
     private sceneTime = 0;
     private lastTime  = 0;
 
+    private isRunning: boolean;
+
     public constructor(
-        canvas: HTMLCanvasElement | undefined,
+        canvas?: HTMLCanvasElement,
         renderParameters: THREE.WebGLRendererParameters = {}
     ) {
 
@@ -33,11 +29,24 @@ export class BaseApplication implements IBaseApplication {
 
         this.sceneManager = new SceneManager();
 
+        this.isRunning = false;
+
     }
 
-    public initialize = async () => {};
+    public running = () => this.isRunning;
+
+    public onInitialization = () => {};
+    public onDestruction    = () => {};
 
     public gameLoop: THREE.XRAnimationLoopCallback = (time: number, _frame?: THREE.XRFrame) => {
+
+        if (this.sceneManager.getCurrent() === undefined) {
+
+            this.isRunning = false;
+            this.renderer.setAnimationLoop(null);
+            this.renderer.clear();
+
+        }
 
         this.deltaTime = (time - this.lastTime) / 1000;
         this.lastTime = time;
@@ -49,7 +58,7 @@ export class BaseApplication implements IBaseApplication {
 
         this.sceneManager.getCurrent()?.onUpdate({
             deltaTime: this.deltaTime,
-            sceneTime: 0,
+            sceneTime: this.sceneTime,
             totalTime: time,
         });
 
@@ -59,6 +68,11 @@ export class BaseApplication implements IBaseApplication {
 
     };
 
-    public run = () => this.renderer.setAnimationLoop(this.gameLoop);
+    public run = () => {
+
+        this.isRunning = true;
+        this.renderer.setAnimationLoop(this.gameLoop);
+
+    } ;
 
 }
