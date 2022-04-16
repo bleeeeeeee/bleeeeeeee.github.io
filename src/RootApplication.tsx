@@ -1,8 +1,8 @@
 import React from "react";
 
-import { ThreeEntryPoint } from "./engine/ThreeEntryPoint";
-
 import { Overlay } from "./gui/Overlay";
+
+import { ThreeEntryPoint } from "./engine/ThreeEntryPoint";
 
 export const RootApplication = () => {
 
@@ -10,7 +10,6 @@ export const RootApplication = () => {
         <React.StrictMode>
             <Overlay />
             <ThreeEntryPoint />
-            {/* <Scene /> */}
         </React.StrictMode>
     );
 

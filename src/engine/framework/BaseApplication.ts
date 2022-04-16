@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import { BaseScene } from "./BaseScene";
 
+import { BaseScene } from "./BaseScene";
 import { SceneManager } from "./SceneManager";
 
 export class BaseApplication {

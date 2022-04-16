@@ -2,11 +2,14 @@ import * as THREE from "three";
 import * as Framework from "./framework/BaseScene";
 
 import { ThreeApplication } from "./ThreeApplication";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 export class MainScene extends Framework.BaseScene {
 
     private readonly camera: THREE.PerspectiveCamera;
     private readonly cube:   THREE.Mesh;
+
+    private readonly orbitControls: OrbitControls;
 
     private readonly cameraMatUpdateCallback: (e: UIEvent) => void;
 
@@ -25,6 +28,9 @@ export class MainScene extends Framework.BaseScene {
         this.cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
         this.cube.name = "main-cube";
         this.add(this.cube);
+
+        this.orbitControls = new OrbitControls(this.camera, this.renderer.domElement);
+        this.orbitControls.enablePan = false;
 
         this.cameraMatUpdateCallback = ThreeApplication.createPerspectiveCameraResizer(this.renderer, this.camera);
         window.addEventListener("resize", this.cameraMatUpdateCallback);
@@ -48,14 +54,14 @@ export class MainScene extends Framework.BaseScene {
         this.cube.rotateX(params.deltaTime);
         this.cube.rotateZ(params.deltaTime);
 
-        console.log(params.sceneTime);
+        //console.log(params.sceneTime);
 
-        if (params.sceneTime > 3) {
+        /*if (params.sceneTime > 3) {
 
             console.log("Poof!");
             this.sceneManager.delete("main-scene");
 
-        }
+        }*/
 
     };
 

@@ -21,7 +21,6 @@ const getReactRoot = () => {
 
 };
 
-
 /**
  * Renders react's v17 elements to the document.
  * @error Warning: ReactDOM.render is no longer supported in React 18. Use createRoot instead. Until you switch to the new API, your app will behave as if it's running React 17.
