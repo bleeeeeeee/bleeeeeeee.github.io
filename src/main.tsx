@@ -2,8 +2,7 @@ import React from "react";
 import * as ReactDOM17 from "react-dom";
 import * as ReactDOM18 from "react-dom/client";
 
-import { Scene } from "./engine/Scene";
-import { Overlay } from "./gui/Overlay";
+import { RootApplication } from "./RootApplication";
 
 export const REACT_VERSION_STABLE = 17;
 export const REACT_VERSION_NEWEST = 18;
@@ -12,12 +11,15 @@ export const CURRENT_REACT_VERSION = REACT_VERSION_STABLE;
 
 type ReactContainer = Element | DocumentFragment;
 
-const getReactRoot = (): JSX.Element => (
-    <React.StrictMode>
-        <Overlay />
-        <Scene />
-    </React.StrictMode>
-);
+const getReactRoot = () => {
+
+    return (
+        <React.StrictMode>
+            <RootApplication />
+        </React.StrictMode>
+    );
+
+};
 
 /**
  * Renders react's v17 elements to the document.
