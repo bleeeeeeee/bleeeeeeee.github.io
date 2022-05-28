@@ -1,32 +1,23 @@
 export class KeyHandler {
 
-    // private readonly keyDownListeners: { [key: string]: (event: KeyboardEvent) => void } = {};
-    private readonly keys: { [key: string]: boolean };
+    private static readonly keys: { [key: string]: boolean } = {};
+    private static initialized = false;
 
-    private onKeyDown = (event: KeyboardEvent) => {
-    
-        this.keys[event.key] = true;
+    private static onKeyDown = (event: KeyboardEvent) => KeyHandler.keys[event.key] = true;
+    private static onKeyUp   = (event: KeyboardEvent) => KeyHandler.keys[event.key] = false;
+
+    public static initialize = () => {
+
+        if (KeyHandler.initialized) return;
+
+        document.addEventListener("keydown", KeyHandler.onKeyDown);
+        document.addEventListener("keyup", KeyHandler.onKeyUp);
 
     };
 
-    private onKeyUp = (event: KeyboardEvent) => {
+    public static isPressed = (key: string): boolean => {
 
-        this.keys[event.key] = false;
-
-    };
-
-    public constructor() {
-
-        this.keys = {};
-
-        document.addEventListener("keydown", this.onKeyDown);
-        document.addEventListener("keyup", this.onKeyUp);
-
-    }
-
-    public isPressed = (key: string): boolean => {
-
-        return this.keys[key];
+        return KeyHandler.keys[key];
 
     };
 

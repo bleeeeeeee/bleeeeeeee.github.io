@@ -5,61 +5,15 @@ import { ThreeApplication } from "./ThreeApplication";
 
 import { KeyHandler } from "./KeyHandler";
 
-// class PlayerDirection {
-
-//     public up = false;
-//     public down = false;
-//     public left = false;
-//     public right = false;
-
-//     public constructor() {
-//     }
-
-// }
-
 export class MainScene extends Framework.BaseScene {
 
-    private readonly ENTITY_HEIGHT: number = 0.3;
+    private readonly ENTITY_HEIGHT: number = 0.2;
 
     private readonly camera: THREE.PerspectiveCamera;
     private readonly ground: THREE.Mesh;
     private readonly player: THREE.Mesh;
 
-    /* TEMPORARY solution to handling player's movement. */
-    // private readonly playerDirections: PlayerDirection;
-
-    private readonly keyHandler: KeyHandler;
-
-    private readonly raycaster: THREE.Raycaster;
-    private readonly mousePosition: THREE.Vector2;
-
     private readonly cameraMatUpdateCallback: (e: UIEvent) => void;
-
-    // private onKeyDown = (event: KeyboardEvent) => {
-
-    //     switch (event.key) {
-
-    //         case "ArrowUp":     this.playerDirections.up    = true; break;
-    //         case "ArrowDown":   this.playerDirections.down  = true; break;
-    //         case "ArrowLeft":   this.playerDirections.left  = true; break;
-    //         case "ArrowRight":  this.playerDirections.right = true; break;
-
-    //     }
-
-    // };
-
-    // private onKeyUp = (event: KeyboardEvent) => {
-
-    //     switch (event.key) {
-
-    //         case "ArrowUp":     this.playerDirections.up    = false; break;
-    //         case "ArrowDown":   this.playerDirections.down  = false; break;
-    //         case "ArrowLeft":   this.playerDirections.left  = false; break;
-    //         case "ArrowRight":  this.playerDirections.right = false; break;
-
-    //     }
-
-    // };
 
     public constructor(params: Framework.BaseSceneParameters) {
 
@@ -68,12 +22,12 @@ export class MainScene extends Framework.BaseScene {
         this.camera = new THREE.PerspectiveCamera(75, (innerWidth / innerHeight), 0.1, 1000.0);
         this.camera.name = "main-camera";
         this.camera.position.y = 5.0;
-        this.camera.position.x = 2.0;
+        // this.camera.position.x = 2.0;
         this.camera.position.z = 2.0;
         this.camera.lookAt(new THREE.Vector3(0, 0, 0));
-        this.add(this.camera);
+        // this.add(this.camera);
 
-        const groundGeoemtry = new THREE.PlaneGeometry(10, 10, 10, 1);
+        const groundGeometry = new THREE.PlaneGeometry(10, 10, 10, 1);
         const groundMaterial = new THREE.MeshBasicMaterial({
             color: 0xffffff,
             side: THREE.FrontSide,
@@ -83,7 +37,7 @@ export class MainScene extends Framework.BaseScene {
                 (event: ErrorEvent) => console.log("Error loading ground texture: " + event.message),),
         });
 
-        this.ground = new THREE.Mesh(groundGeoemtry, groundMaterial);
+        this.ground = new THREE.Mesh(groundGeometry, groundMaterial);
         this.ground.rotation.x = -Math.PI / 2;
         this.add(this.ground);
 
@@ -93,25 +47,16 @@ export class MainScene extends Framework.BaseScene {
         this.player = new THREE.Mesh(playerGeometry, playerMaterial);
         this.player.position.y = playerGeometry.parameters.height / 2;
         this.add(this.player);
-
-        // this.playerDirections = new PlayerDirection();
-
-        this.keyHandler = new KeyHandler();
-
-        this.raycaster = new THREE.Raycaster();
-        this.mousePosition = new THREE.Vector2();
+        this.player.add(this.camera);
 
         this.cameraMatUpdateCallback = ThreeApplication.createPerspectiveCameraResizer(this.renderer, this.camera);
-        window.addEventListener("resize", this.cameraMatUpdateCallback);
-
-        // document.addEventListener("keydown", this.onKeyDown);
-        // document.addEventListener("keyup", this.onKeyUp);
 
     }
 
     public onInitialization = (params: Framework.InitializeParameters) => {
 
         this.managerKey = params.key;
+        window.addEventListener("resize", this.cameraMatUpdateCallback);
 
     };
 
@@ -123,20 +68,13 @@ export class MainScene extends Framework.BaseScene {
 
     public onUpdate = (params: Framework.UpdateParameters) => {
 
-        // this.raycaster.setFromCamera(this.mousePosition, this.camera);
-
         const SPEED = 3;
         const distance = SPEED * params.deltaTime;
 
-        // if (this.playerDirections.up)    this.player.position.z -= distance;
-        // if (this.playerDirections.down)  this.player.position.z += distance;
-        // if (this.playerDirections.left)  this.player.position.x -= distance;
-        // if (this.playerDirections.right) this.player.position.x += distance;
-
-        if (this.keyHandler.isPressed("ArrowUp"))    this.player.position.z -= distance;
-        if (this.keyHandler.isPressed("ArrowDown"))  this.player.position.z += distance;
-        if (this.keyHandler.isPressed("ArrowLeft"))  this.player.position.x -= distance;
-        if (this.keyHandler.isPressed("ArrowRight")) this.player.position.x += distance;
+        if (KeyHandler.isPressed("ArrowUp"))    this.player.position.z -= distance;
+        if (KeyHandler.isPressed("ArrowDown"))  this.player.position.z += distance;
+        if (KeyHandler.isPressed("ArrowLeft"))  this.player.position.x -= distance;
+        if (KeyHandler.isPressed("ArrowRight")) this.player.position.x += distance;
 
     };
 

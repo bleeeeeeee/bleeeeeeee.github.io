@@ -3,6 +3,8 @@ import * as THREE from "three";
 import { BaseScene } from "./BaseScene";
 import { SceneManager } from "./SceneManager";
 
+import { KeyHandler } from "../KeyHandler";
+
 export class BaseApplication {
 
     protected readonly renderer: THREE.WebGLRenderer;
@@ -30,6 +32,8 @@ export class BaseApplication {
         this.sceneManager = new SceneManager();
 
         this.isRunning = false;
+
+        KeyHandler.initialize();
 
     }
 

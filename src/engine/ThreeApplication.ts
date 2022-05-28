@@ -64,8 +64,8 @@ export class ThreeApplication extends Framework.BaseApplication {
 
     public onInitialization = () => {
 
-        // this.sceneManager.setCurrent("main-scene");
-        this.sceneManager.setCurrent("main-menu-scene");
+        this.sceneManager.setCurrent("main-scene");
+        // this.sceneManager.setCurrent("main-menu-scene");
 
     };
 
