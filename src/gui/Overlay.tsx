@@ -7,9 +7,7 @@ import { setLocalStorage, getLocalStorage } from "../utility/LocalStorage";
 
 import "./Overlay.css";
 
-/**
- * Local storage keys
- */
+/* Local storage keys */
 const LS_KEYS = {
 
     "overlay.buttonCount":  stringHash("overlay.buttonCount"),

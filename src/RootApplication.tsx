@@ -1,4 +1,4 @@
-import React from "react";
+import React, { createContext, useContext } from "react";
 
 import { Overlay } from "./gui/Overlay";
 
@@ -8,7 +8,7 @@ export const RootApplication = () => {
 
     return (
         <React.StrictMode>
-            <Overlay />
+            {/* <Overlay /> */}
             <ThreeEntryPoint />
         </React.StrictMode>
     );
