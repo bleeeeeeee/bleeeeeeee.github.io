@@ -13,6 +13,7 @@ import { KeyHandler } from "./KeyHandler";
 //     public right = false;
 
 //     public constructor() {
+    
 //     }
 
 // }
@@ -133,10 +134,14 @@ export class MainScene extends Framework.BaseScene {
         // if (this.playerDirections.left)  this.player.position.x -= distance;
         // if (this.playerDirections.right) this.player.position.x += distance;
 
-        if (this.keyHandler.isPressed("ArrowUp"))    this.player.position.z -= distance;
-        if (this.keyHandler.isPressed("ArrowDown"))  this.player.position.z += distance;
-        if (this.keyHandler.isPressed("ArrowLeft"))  this.player.position.x -= distance;
-        if (this.keyHandler.isPressed("ArrowRight")) this.player.position.x += distance;
+        if (this.keyHandler.isKeyPressed("ArrowUp"))    this.player.position.z -= distance;
+        if (this.keyHandler.isKeyPressed("ArrowDown"))  this.player.position.z += distance;
+        if (this.keyHandler.isKeyPressed("ArrowLeft"))  this.player.position.x -= distance;
+        if (this.keyHandler.isKeyPressed("ArrowRight")) this.player.position.x += distance;
+
+        if (this.keyHandler.isKeyPressed("Escape")) {
+            this.sceneManager.setCurrent("main-menu-scene");
+        }
 
     };
 
