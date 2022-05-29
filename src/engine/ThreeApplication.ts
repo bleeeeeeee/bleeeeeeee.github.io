@@ -1,4 +1,5 @@
 import * as Framework from "./framework/BaseApplication";
+
 import { MainScene } from "./MainScene";
 import { MainMenuScene } from "./MainMenuScene";
 
@@ -64,8 +65,8 @@ export class ThreeApplication extends Framework.BaseApplication {
 
     public onInitialization = () => {
 
-        this.sceneManager.setCurrent("main-scene");
-        // this.sceneManager.setCurrent("main-menu-scene");
+        // this.sceneManager.setCurrent("main-scene");
+        this.sceneManager.setCurrent("main-menu-scene");
 
     };
 

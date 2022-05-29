@@ -3,7 +3,7 @@ import * as THREE from "three";
 import { BaseScene } from "./BaseScene";
 import { SceneManager } from "./SceneManager";
 
-import { KeyHandler } from "../KeyHandler";
+import { KeyHandler } from "./KeyHandler";
 
 export class BaseApplication {
 

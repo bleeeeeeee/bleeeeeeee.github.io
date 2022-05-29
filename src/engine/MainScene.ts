@@ -3,7 +3,7 @@ import * as Framework from "./framework/BaseScene";
 
 import { ThreeApplication } from "./ThreeApplication";
 
-import { KeyHandler } from "./KeyHandler";
+import { KeyHandler } from "./framework/KeyHandler";
 
 export class MainScene extends Framework.BaseScene {
 
@@ -25,11 +25,10 @@ export class MainScene extends Framework.BaseScene {
         // this.camera.position.x = 2.0;
         this.camera.position.z = 2.0;
         this.camera.lookAt(new THREE.Vector3(0, 0, 0));
-        // this.add(this.camera);
 
         const groundGeometry = new THREE.PlaneGeometry(10, 10, 10, 1);
         const groundMaterial = new THREE.MeshBasicMaterial({
-            color: 0xffffff,
+            color: 0x00ff00,
             side: THREE.FrontSide,
             map: new THREE.TextureLoader().load("resources/textures/ground.png",
                 (texture: THREE.Texture) => console.log("Loaded ground texture!"),
@@ -38,16 +37,15 @@ export class MainScene extends Framework.BaseScene {
         });
 
         this.ground = new THREE.Mesh(groundGeometry, groundMaterial);
+        this.ground.name = "ground";
         this.ground.rotation.x = -Math.PI / 2;
-        this.add(this.ground);
 
         const playerGeometry = new THREE.BoxGeometry(1, this.ENTITY_HEIGHT, 1);
         const playerMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 
         this.player = new THREE.Mesh(playerGeometry, playerMaterial);
+        this.player.name = "player";
         this.player.position.y = playerGeometry.parameters.height / 2;
-        this.add(this.player);
-        this.player.add(this.camera);
 
         this.cameraMatUpdateCallback = ThreeApplication.createPerspectiveCameraResizer(this.renderer, this.camera);
 
@@ -57,6 +55,10 @@ export class MainScene extends Framework.BaseScene {
 
         this.managerKey = params.key;
         window.addEventListener("resize", this.cameraMatUpdateCallback);
+
+        this.add(this.ground);
+        this.add(this.player);
+        this.player.add(this.camera);
 
     };
 
@@ -71,10 +73,14 @@ export class MainScene extends Framework.BaseScene {
         const SPEED = 3;
         const distance = SPEED * params.deltaTime;
 
-        if (KeyHandler.isPressed("ArrowUp"))    this.player.position.z -= distance;
-        if (KeyHandler.isPressed("ArrowDown"))  this.player.position.z += distance;
-        if (KeyHandler.isPressed("ArrowLeft"))  this.player.position.x -= distance;
-        if (KeyHandler.isPressed("ArrowRight")) this.player.position.x += distance;
+        if (KeyHandler.isKeyPressed("ArrowUp"))    this.player.position.z -= distance;
+        if (KeyHandler.isKeyPressed("ArrowDown"))  this.player.position.z += distance;
+        if (KeyHandler.isKeyPressed("ArrowLeft"))  this.player.position.x -= distance;
+        if (KeyHandler.isKeyPressed("ArrowRight")) this.player.position.x += distance;
+
+        if (KeyHandler.isKeyPressed("Escape")) {
+            this.sceneManager.setCurrent("main-menu-scene");
+        }
 
     };
 
