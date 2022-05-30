@@ -67,6 +67,8 @@ const renderReact = (container: ReactContainer, version: number) => {
 
 const main = () => {
 
+    console.log("TEST");
+    
     const container = document.getElementById("root");
     if (container === null) {
 
