@@ -28,9 +28,9 @@ export class MainScene extends Framework.BaseScene {
 
         const groundGeometry = new THREE.PlaneGeometry(10, 10, 10, 1);
         const groundMaterial = new THREE.MeshBasicMaterial({
-            color: 0x00ff00,
+            color: 0xffffff,
             side: THREE.FrontSide,
-            map: new THREE.TextureLoader().load("resources/textures/ground.png",
+            map: new THREE.TextureLoader().load("/resources/textures/ground.png",
                 (texture: THREE.Texture) => console.log("Loaded ground texture!"),
                 (event: ProgressEvent) => console.log("Loading ground texture: " + event.loaded + "/" + event.total),
                 (event: ErrorEvent) => console.log("Error loading ground texture: " + event.message),),
