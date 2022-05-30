@@ -8,7 +8,8 @@
         "preview": "vite preview",
         "lint": "eslint .",
         "lint-and-fix": "eslint . --fix",
-        "deploy-pages": "gh-pages -d dist"
+        "deploy-pages": "gh-pages -d dist",
+        "test": "echo No tests available"
     },
     "dependencies": {
         "react": "^18.0.0",
