@@ -42,7 +42,7 @@ export class BaseApplication {
     public onInitialization = () => {};
     public onDestruction    = () => {};
 
-    public gameLoop: THREE.XRAnimationLoopCallback = (time: number, _frame?: THREE.XRFrame) => {
+    public gameLoop: XRFrameRequestCallback = (time: number, _frame?: XRFrame) => {
 
         if (this.sceneManager.getCurrent() === undefined) {
 
