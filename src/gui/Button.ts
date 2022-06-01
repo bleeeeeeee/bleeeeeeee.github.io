@@ -1,5 +1,7 @@
 import * as THREE from "three";
-import { Text } from "troika-three-text";
+
+import * as TROIKA from "troika-three-text";
+// import { Text } from "troika-three-text";
 
 export interface ButtonParameters {
 
@@ -15,6 +17,7 @@ export interface ButtonParameters {
 export class Button extends THREE.Group {
 
     private readonly shape: THREE.Mesh;
+    private readonly text: TROIKA.Text;
 
     public constructor(params: ButtonParameters) {
 
@@ -31,17 +34,18 @@ export class Button extends THREE.Group {
         this.shape.position.copy(params.position);
         this.add(this.shape);
 
-        const text = new Text();
+        this.text = new Text();
 
-        text.text      = params.text || "";
-        text.fontSize  = params.fontSize || 5;
-        text.color     = params.fontColor || "0x000000";
-        // text.textAlign = "center";
-        text.maxWidth  = params.size.x;
-        text.anchorX   = params.size.x / 2 - (text.text.length == 4 ? 4.8 : 3.2);
-        text.anchorY   = -params.position.y - params.size.y / 2 + 0.18;
+        this.text.text      = params.text || "";
+        this.text.fontSize  = params.fontSize || 5;
+        this.text.color     = params.fontColor || "0x000000";
+        // this.text.textAlign = "center";
+        this.text.maxWidth  = params.size.x;
+        this.text.anchorX   = params.size.x / 2 - (text.text.length == 4 ? 4.8 : 3.2);
+        this.text.anchorY   = -params.position.y - params.size.y / 2 + 0.18;
 
-        this.add(text);
+        this.add(this.text);
+        
     }
 
 }
