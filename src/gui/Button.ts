@@ -41,7 +41,6 @@ export class Button extends THREE.Group {
         text.anchorX   = params.size.x / 2 - (text.text.length == 4 ? 4.8 : 3.2);
         text.anchorY   = -params.position.y - params.size.y / 2 + 0.18;
 
-        console.log(text.text.length);
         this.add(text);
     }
 
