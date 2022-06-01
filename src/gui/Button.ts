@@ -33,20 +33,13 @@ export class Button extends THREE.Group {
 
         const text = new Text();
 
-        text.text       = params.text || "";
-        text.fontSize   = params.fontSize || 5;
-        text.color      = params.fontColor || "0x000000";
-        // text.textAlign  = "center";
-        text.maxWidth   = params.size.x;
-        
-        if(text.text.length == 4) {
-            text.anchorX    = params.size.x / 2 - 4.8;
-        }
-        else {
-            text.anchorX    = params.size.x / 2 - 3.2;
-        }
-        
-        text.anchorY    = -params.position.y - params.size.y / 2 + 0.18;
+        text.text      = params.text || "";
+        text.fontSize  = params.fontSize || 5;
+        text.color     = params.fontColor || "0x000000";
+        // text.textAlign = "center";
+        text.maxWidth  = params.size.x;
+        text.anchorX   = params.size.x / 2 - (text.text.length == 4 ? 4.8 : 3.2);
+        text.anchorY   = -params.position.y - params.size.y / 2 + 0.18;
 
         console.log(text.text.length);
         this.add(text);
