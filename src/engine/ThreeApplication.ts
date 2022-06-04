@@ -1,3 +1,4 @@
+import * as THREE from "three";
 import * as Framework from "./framework/BaseApplication";
 
 import { MainScene } from "./MainScene";
@@ -22,7 +23,6 @@ export class ThreeApplication extends Framework.BaseApplication {
             camera.updateProjectionMatrix();
 
             renderer.setSize(innerWidth, innerHeight);
-
         };
 
     };
@@ -51,6 +51,10 @@ export class ThreeApplication extends Framework.BaseApplication {
 
         super(canvas, { antialias: true, });
 
+        this.renderer.shadowMap.enabled = true;
+        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        this.renderer.shadowMap.autoUpdate = true;
+
         this.sceneManager.set("main-scene", new MainScene({
             renderer:     this.renderer,
             sceneManager: this.sceneManager,
@@ -65,8 +69,8 @@ export class ThreeApplication extends Framework.BaseApplication {
 
     public onInitialization = () => {
 
-        // this.sceneManager.setCurrent("main-scene");
-        this.sceneManager.setCurrent("main-menu-scene");
+        this.sceneManager.setCurrent("main-scene");
+        // this.sceneManager.setCurrent("main-menu-scene");
 
     };
 
