@@ -1,6 +1,5 @@
 import * as THREE from "three";
 import * as Framework from "./framework/BaseScene";
-import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 
 import { ThreeApplication } from "./ThreeApplication";
 
@@ -21,7 +20,6 @@ export class MainScene extends Framework.BaseScene {
 
     private readonly cameraMatUpdateCallback: (e: UIEvent) => void;
 
-    private readonly objectLoader = new OBJLoader();
     private readonly cubeTextureLoader = new THREE.CubeTextureLoader();
 
     private readonly hemisphereLight: THREE.HemisphereLight;
@@ -36,10 +34,10 @@ export class MainScene extends Framework.BaseScene {
 
         this.camera = new THREE.PerspectiveCamera(50, (innerWidth / innerHeight), 0.1, 1000.0);
         this.camera.name = "main-camera";
-        this.camera.position.y = 2.0;
+        this.camera.position.y = 1.0;
         // this.camera.position.x = 2.0;
         this.camera.position.z = 3.0;
-        this.camera.lookAt(new THREE.Vector3(0, -0.5, -5));
+        this.camera.lookAt(new THREE.Vector3(0, 0.2, -5));
 
         // this.controls = new OrbitControls( this.camera, this.renderer.domElement );
         // this.controls.enableZoom = true;
@@ -51,12 +49,12 @@ export class MainScene extends Framework.BaseScene {
 
         this.cubeTextureLoader = new THREE.CubeTextureLoader();
         this.backgroundTexture = this.cubeTextureLoader.load([
-            "/resources/textures/cubemap-2/px.png",
-            "/resources/textures/cubemap-2/nx.png",
-            "/resources/textures/cubemap-2/py.png",
-            "/resources/textures/cubemap-2/ny.png",
-            "/resources/textures/cubemap-2/pz.png",
-            "/resources/textures/cubemap-2/nz.png",
+            "/resources/textures/cubemap-3/px.png",
+            "/resources/textures/cubemap-3/nx.png",
+            "/resources/textures/cubemap-3/py.png",
+            "/resources/textures/cubemap-3/ny.png",
+            "/resources/textures/cubemap-3/pz.png",
+            "/resources/textures/cubemap-3/nz.png",
         ]);
 
         // ground texture
@@ -67,10 +65,10 @@ export class MainScene extends Framework.BaseScene {
         groundTextureAlbedo.wrapS   = groundTextureAlbedo.wrapT  = 
         groundTextureBump.wrapS     = groundTextureBump.wrapT    = THREE.RepeatWrapping;
 
-        groundTextureAlbedo.repeat.set(30, 300);
-        groundTextureBump.repeat.set(30, 300);
+        groundTextureAlbedo.repeat.set(75, 150);
+        groundTextureBump.repeat.set(75, 150);
 
-        const groundGeometry = new THREE.PlaneGeometry(100, 1000, 1000, 1);
+        const groundGeometry = new THREE.PlaneGeometry(250, 500, 1000, 1);
         const groundMaterial = new THREE.MeshStandardMaterial({
             color: "rgb(255, 255, 255)",
             
@@ -90,36 +88,35 @@ export class MainScene extends Framework.BaseScene {
         
         // main player
 
-        const playerTextureAlbedo   = new THREE.TextureLoader().load("/resources/textures/stylized-fur/albedo.png");
-        const playerTextureBump     = new THREE.TextureLoader().load("/resources/textures/stylized-fur/height.png");
-        const playerTextureAO       = new THREE.TextureLoader().load("/resources/textures/stylized-fur/ao.png");
-        const playerTextureNormals  = new THREE.TextureLoader().load("/resources/textures/stylized-fur/normals.png");
+        // const playerTextureAlbedo   = new THREE.TextureLoader().load("/resources/textures/stylized-fur/albedo.png");
+        // const playerTextureBump     = new THREE.TextureLoader().load("/resources/textures/stylized-fur/height.png");
+        // const playerTextureNormals  = new THREE.TextureLoader().load("/resources/textures/stylized-fur/normals.png");
 
-        const playerGeometry = new THREE.BoxGeometry(1, this.ENTITY_HEIGHT, 1);
-        const playerMaterial = new THREE.MeshStandardMaterial({ 
-            color: "rgb(255, 255, 255)",
-            side: THREE.FrontSide,
-            // map: playerTextureAlbedo,
+        // const playerGeometry = new THREE.BoxGeometry(1, this.ENTITY_HEIGHT, 1);
+        // const playerMaterial = new THREE.MeshStandardMaterial({ 
+        //     color: "rgb(255, 255, 255)",
+        //     side: THREE.FrontSide,
+        //     map: playerTextureAlbedo,
 
-            bumpMap: playerTextureBump,
-            bumpScale: 10,
-            aoMap: playerTextureAO,
-            aoMapIntensity: 1,
-            normalMap: playerTextureNormals,
-            normalScale: new THREE.Vector2(2, 0.5),
-        });
+        //     bumpMap: playerTextureBump,
+        //     bumpScale: 1,
+        //     normalMap: playerTextureNormals,
+        //     normalScale: new THREE.Vector2(2, 2),
+        // });
 
-        this.player = new THREE.Mesh(playerGeometry, playerMaterial);
-        this.player.name = "player";
-        this.player.position.y = playerGeometry.parameters.height / 2 + 0.2;
-        this.player.castShadow = true;
+        // this.player = new THREE.Mesh(playerGeometry, playerMaterial);
+        // this.player.name = "player";
+        // this.player.position.y = playerGeometry.parameters.height / 2 + 0.2;
+        // this.player.castShadow = true;
+
+
 
         // main world lighting
 
         this.hemisphereLight = new THREE.HemisphereLight("rgb(103, 122, 129)", "rgb(113, 78, 36)", 0.4);
         this.hemisphereLight.position.set(0, 100, 0);
 
-        this.mainLight = new THREE.DirectionalLight("rgb(244, 244, 230)", 1);
+        this.mainLight = new THREE.DirectionalLight("rgb(244, 244, 230)", 0.75);
         this.mainLight.position.set(0, 10, 0);
         this.mainLight.target.position.set(0, 0, 0);
         this.mainLight.castShadow = true;
