@@ -3,7 +3,11 @@ import * as Framework from "./framework/BaseScene";
 
 import { ThreeApplication } from "./ThreeApplication";
 
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+
 import { KeyHandler } from "./framework/KeyHandler";
+
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 export class MainScene extends Framework.BaseScene {
 
@@ -11,8 +15,9 @@ export class MainScene extends Framework.BaseScene {
 
     private readonly camera: THREE.PerspectiveCamera;
     private readonly ground: THREE.Mesh;
-    private readonly player: THREE.Mesh;
+    private player: THREE.Object3D;
 
+    private readonly GLTFLoader: GLTFLoader;
     private readonly cameraMatUpdateCallback: (e: UIEvent) => void;
 
     public constructor(params: Framework.BaseSceneParameters) {
@@ -39,16 +44,38 @@ export class MainScene extends Framework.BaseScene {
         this.ground = new THREE.Mesh(groundGeometry, groundMaterial);
         this.ground.name = "ground";
         this.ground.rotation.x = -Math.PI / 2;
+        
+        // test model
 
-        const playerGeometry = new THREE.BoxGeometry(1, this.ENTITY_HEIGHT, 1);
-        const playerMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+        this.GLTFLoader = new GLTFLoader();
+        this.GLTFLoader.load(
+            
+            "/resources/objects/cat/2887649_Cat+Cube.glb", 
+            
+            ( player ) => {
+                this.add( player.scene );
 
-        this.player = new THREE.Mesh(playerGeometry, playerMaterial);
-        this.player.name = "player";
-        this.player.position.y = playerGeometry.parameters.height / 2;
+                player.animations;  // Array<THREE.AnimationClip>
+                player.scene;       // THREE.Group
+                player.scenes;      // Array<THREE.Group>
+                player.cameras;     // Array<THREE.Camera>
+                player.asset;       // Object
+
+                this.renderer.render(player.scene, this.camera);
+            },
+            
+            ( xhr ) => {
+                console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+            },
+            
+            ( error ) => {
+                console.log(error);
+            }
+        );
 
         this.cameraMatUpdateCallback = ThreeApplication.createPerspectiveCameraResizer(this.renderer, this.camera);
-
+        
+        const controls = new OrbitControls( this.camera, this.renderer.domElement );
     }
 
     public onInitialization = (params: Framework.InitializeParameters) => {
@@ -58,8 +85,6 @@ export class MainScene extends Framework.BaseScene {
 
         this.add(this.ground);
         this.add(this.player);
-        this.player.add(this.camera);
-
     };
 
     public onDestruction = () => {
