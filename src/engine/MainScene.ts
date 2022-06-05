@@ -12,7 +12,7 @@ export class MainScene extends Framework.BaseScene {
 
     private readonly GLTFLoader: GLTFLoader;
     private readonly cubeTextureLoader = new THREE.CubeTextureLoader();
-    
+
     private readonly camera: THREE.PerspectiveCamera;
 
     // private readonly ENTITY_HEIGHT: number = 0.2;
@@ -40,7 +40,6 @@ export class MainScene extends Framework.BaseScene {
 
     // private OrbitControls: OrbitControls;
 
-    private startTextGeometry: TextGeometry;
     private readonly startTextMaterial: THREE.MeshStandardMaterial;
     private readonly startText: THREE.Mesh;
 
