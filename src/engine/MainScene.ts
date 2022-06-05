@@ -3,6 +3,8 @@ import * as Framework from "./framework/BaseScene";
 
 import { ThreeApplication } from "./ThreeApplication";
 
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+
 import { KeyHandler } from "./framework/KeyHandler";
 
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
@@ -16,8 +18,9 @@ export class MainScene extends Framework.BaseScene {
 
     private readonly backgroundTexture: THREE.CubeTexture;
     private readonly ground: THREE.Mesh;
-    private readonly player: THREE.Mesh;
+    private player: THREE.Object3D;
 
+    private readonly GLTFLoader: GLTFLoader;
     private readonly cameraMatUpdateCallback: (e: UIEvent) => void;
 
     private readonly cubeTextureLoader = new THREE.CubeTextureLoader();
@@ -86,28 +89,54 @@ export class MainScene extends Framework.BaseScene {
         this.ground.name = "ground";
         this.ground.rotation.x = -Math.PI / 2;
         
-        // main player
+        // test model
 
-        const playerTextureAlbedo   = new THREE.TextureLoader().load("/resources/textures/stylized-fur/albedo.png");
-        const playerTextureBump     = new THREE.TextureLoader().load("/resources/textures/stylized-fur/height.png");
-        const playerTextureNormals  = new THREE.TextureLoader().load("/resources/textures/stylized-fur/normals.png");
+        this.GLTFLoader = new GLTFLoader();
+        this.GLTFLoader.load(
+            
+            "/resources/objects/cat/2887649_Cat+Cube.glb", 
+            
+            ( player ) => {
 
-        const playerGeometry = new THREE.BoxGeometry(1, this.ENTITY_HEIGHT, 1);
-        const playerMaterial = new THREE.MeshStandardMaterial({ 
-            color: "rgb(255, 255, 255)",
-            side: THREE.FrontSide,
-            map: playerTextureAlbedo,
+                player.animations;  // Array<THREE.AnimationClip>
+                player.scene;       // THREE.Group
+                player.scenes;      // Array<THREE.Group>
+                player.cameras;     // Array<THREE.Camera>
+                player.asset;       // Object
 
-            bumpMap: playerTextureBump,
-            bumpScale: 1,
-            normalMap: playerTextureNormals,
-            normalScale: new THREE.Vector2(2, 2),
-        });
+                player.scene.rotation.y = Math.PI;
+                this.player = player.scene;
+            },
+            
+            ( xhr ) => {
+                console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+            },
+            
+            ( error ) => {
+                console.log(error);
+            }
+        );
 
-        this.player = new THREE.Mesh(playerGeometry, playerMaterial);
-        this.player.name = "player";
-        this.player.position.y = playerGeometry.parameters.height / 2 + 0.2;
-        this.player.castShadow = true;
+//         const playerTextureAlbedo   = new THREE.TextureLoader().load("/resources/textures/stylized-fur/albedo.png");
+//         const playerTextureBump     = new THREE.TextureLoader().load("/resources/textures/stylized-fur/height.png");
+//         const playerTextureNormals  = new THREE.TextureLoader().load("/resources/textures/stylized-fur/normals.png");
+
+//         const playerGeometry = new THREE.BoxGeometry(1, this.ENTITY_HEIGHT, 1);
+//         const playerMaterial = new THREE.MeshStandardMaterial({ 
+//             color: "rgb(255, 255, 255)",
+//             side: THREE.FrontSide,
+//             map: playerTextureAlbedo,
+
+//             bumpMap: playerTextureBump,
+//             bumpScale: 1,
+//             normalMap: playerTextureNormals,
+//             normalScale: new THREE.Vector2(2, 2),
+//         });
+
+//         this.player = new THREE.Mesh(playerGeometry, playerMaterial);
+//         this.player.name = "player";
+//         this.player.position.y = playerGeometry.parameters.height / 2 + 0.2;
+//         this.player.castShadow = true;
 
         // main world lighting
 
@@ -142,6 +171,7 @@ export class MainScene extends Framework.BaseScene {
         this.player.position.z = this.ground.geometry.parameters.height / 2 - 5;
         this.add(this.ground);
         this.add(this.player);
+
         this.player.add(this.camera);
 
         this.add(this.hemisphereLight);
