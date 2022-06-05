@@ -61,7 +61,8 @@ export class MainScene extends Framework.BaseScene {
                 player.cameras;     // Array<THREE.Camera>
                 player.asset;       // Object
 
-                this.renderer.render(player.scene, this.camera);
+                player.scene.rotation.y = Math.PI;
+                this.player = player.scene;
             },
             
             ( xhr ) => {
