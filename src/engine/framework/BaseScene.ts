@@ -4,6 +4,7 @@
  */
 
 import * as THREE from "three";
+
 import { SceneManager } from "./SceneManager";
 
 export interface UpdateParameters {
@@ -16,16 +17,6 @@ export interface UpdateParameters {
 
 export interface RenderParameters { }
 
-export interface InitializeParameters {
-
-    /**
-     * A key which is being assigned by the SceneManager.
-     */
-    key: string;
-
-}
-
-export type InitializationMethod = (parameters: InitializeParameters) => void;
 export type DestructionMethod    = () => void;
 
 export type UpdateMethod = (parameters: UpdateParameters) => void;
@@ -36,6 +27,8 @@ export interface BaseSceneParameters {
     renderer: THREE.WebGLRenderer;
     sceneManager: SceneManager;
 
+    isOverlay?: boolean;
+
 }
 
 export class BaseScene extends THREE.Scene {
@@ -45,7 +38,7 @@ export class BaseScene extends THREE.Scene {
     protected readonly renderer: THREE.WebGLRenderer;
     protected readonly sceneManager: SceneManager;
 
-    protected managerKey = "no-key";
+    public readonly isOverlay: boolean;
 
     public constructor(parameters: BaseSceneParameters) {
 
@@ -56,12 +49,13 @@ export class BaseScene extends THREE.Scene {
         this.renderer     = this.sceneParameters.renderer;
         this.sceneManager = this.sceneParameters.sceneManager;
 
+        this.isOverlay = parameters.isOverlay ?? false;
+
     }
 
     public removeAll = () => this.remove(this, ...this.children);
 
-    public onInitialization: InitializationMethod = async () => { };
-    public onDestruction:    DestructionMethod    = async () => { };
+    public onDestruction: DestructionMethod = () => { };
 
     public onUpdate: UpdateMethod = () => { };
     public onRender: RenderMethod = () => { };

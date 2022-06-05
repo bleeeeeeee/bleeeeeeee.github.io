@@ -15,7 +15,7 @@ const main = () => {
     
     application.onInitialization();
     application.run();
-
+    
 };
 
 main();

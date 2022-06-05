@@ -4,6 +4,7 @@ import * as Framework from "./framework/BaseScene";
 import { ThreeApplication } from "./ThreeApplication";
 
 import { KeyHandler } from "./framework/KeyHandler";
+import { MainMenuScene } from "./MainMenuScene";
 
 export class MainScene extends Framework.BaseScene {
 
@@ -49,18 +50,13 @@ export class MainScene extends Framework.BaseScene {
 
         this.cameraMatUpdateCallback = ThreeApplication.createPerspectiveCameraResizer(this.renderer, this.camera);
 
-    }
-
-    public onInitialization = (params: Framework.InitializeParameters) => {
-
-        this.managerKey = params.key;
         window.addEventListener("resize", this.cameraMatUpdateCallback);
 
         this.add(this.ground);
         this.add(this.player);
         this.player.add(this.camera);
 
-    };
+    }
 
     public onDestruction = () => {
 
@@ -79,7 +75,10 @@ export class MainScene extends Framework.BaseScene {
         if (KeyHandler.isKeyPressed("ArrowRight")) this.player.position.x += distance;
 
         if (KeyHandler.isKeyPressed("Escape")) {
-            this.sceneManager.setCurrent("main-menu-scene");
+            this.sceneManager.push(new MainMenuScene({
+                renderer:     this.renderer,
+                sceneManager: this.sceneManager,
+            }));
         }
 
     };
