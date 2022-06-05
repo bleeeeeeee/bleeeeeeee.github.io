@@ -2,6 +2,7 @@ import * as THREE from "three";
 import * as Framework from "./framework/BaseScene";
 
 import { Buttons, KeyHandler } from "./framework/KeyHandler";
+import { ThreeApplication } from "./ThreeApplication";
 
 // import { Button } from "../gui/Button";
 
@@ -74,11 +75,14 @@ export class MainMenuScene extends Framework.BaseScene {
         // this.orbitControls = new OrbitControls(this.camera, this.renderer.domElement);
         // this.orbitControls.enablePan = false;
 
+        this.cameraMatUpdateCallback = ThreeApplication.createPerspectiveCameraResizer(this.renderer, this.camera);
+
     }
 
     public onInitialization = (params: Framework.InitializeParameters) => {
 
         this.managerKey = params.key;
+        window.addEventListener("resize", this.cameraMatUpdateCallback);
         document.addEventListener("mousemove", this.onDocumentMouseMove.bind(this));
 
         this.add(this.playButton, this.restartButton, this.creditsButton);
@@ -90,6 +94,7 @@ export class MainMenuScene extends Framework.BaseScene {
     
     public onDestruction = () => {
     
+        window.addEventListener("resize", this.cameraMatUpdateCallback);
         document.removeEventListener("mousemove", this.onDocumentMouseMove.bind(this));
         this.renderer.setClearColor("rgb(0, 0, 0)", 1);
 
