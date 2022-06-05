@@ -49,12 +49,12 @@ export class MainScene extends Framework.BaseScene {
 
         this.cubeTextureLoader = new THREE.CubeTextureLoader();
         this.backgroundTexture = this.cubeTextureLoader.load([
-            "/resources/textures/cubemap-3/px.png",
-            "/resources/textures/cubemap-3/nx.png",
-            "/resources/textures/cubemap-3/py.png",
-            "/resources/textures/cubemap-3/ny.png",
-            "/resources/textures/cubemap-3/pz.png",
-            "/resources/textures/cubemap-3/nz.png",
+            "/resources/textures/cubemap-4/px.png",
+            "/resources/textures/cubemap-4/nx.png",
+            "/resources/textures/cubemap-4/py.png",
+            "/resources/textures/cubemap-4/ny.png",
+            "/resources/textures/cubemap-4/pz.png",
+            "/resources/textures/cubemap-4/nz.png",
         ]);
 
         // ground texture
@@ -88,35 +88,36 @@ export class MainScene extends Framework.BaseScene {
         
         // main player
 
-        // const playerTextureAlbedo   = new THREE.TextureLoader().load("/resources/textures/stylized-fur/albedo.png");
-        // const playerTextureBump     = new THREE.TextureLoader().load("/resources/textures/stylized-fur/height.png");
-        // const playerTextureNormals  = new THREE.TextureLoader().load("/resources/textures/stylized-fur/normals.png");
+        const playerTextureAlbedo   = new THREE.TextureLoader().load("/resources/textures/stylized-fur/albedo.png");
+        const playerTextureBump     = new THREE.TextureLoader().load("/resources/textures/stylized-fur/height.png");
+        const playerTextureNormals  = new THREE.TextureLoader().load("/resources/textures/stylized-fur/normals.png");
 
-        // const playerGeometry = new THREE.BoxGeometry(1, this.ENTITY_HEIGHT, 1);
-        // const playerMaterial = new THREE.MeshStandardMaterial({ 
-        //     color: "rgb(255, 255, 255)",
-        //     side: THREE.FrontSide,
-        //     map: playerTextureAlbedo,
+        const playerGeometry = new THREE.BoxGeometry(1, this.ENTITY_HEIGHT, 1);
+        const playerMaterial = new THREE.MeshStandardMaterial({ 
+            color: "rgb(255, 255, 255)",
+            side: THREE.FrontSide,
+            map: playerTextureAlbedo,
 
-        //     bumpMap: playerTextureBump,
-        //     bumpScale: 1,
-        //     normalMap: playerTextureNormals,
-        //     normalScale: new THREE.Vector2(2, 2),
-        // });
+            bumpMap: playerTextureBump,
+            bumpScale: 1,
+            normalMap: playerTextureNormals,
+            normalScale: new THREE.Vector2(2, 2),
+        });
 
-        // this.player = new THREE.Mesh(playerGeometry, playerMaterial);
-        // this.player.name = "player";
-        // this.player.position.y = playerGeometry.parameters.height / 2 + 0.2;
-        // this.player.castShadow = true;
-
-
+        this.player = new THREE.Mesh(playerGeometry, playerMaterial);
+        this.player.name = "player";
+        this.player.position.y = playerGeometry.parameters.height / 2 + 0.2;
+        this.player.castShadow = true;
 
         // main world lighting
 
-        this.hemisphereLight = new THREE.HemisphereLight("rgb(103, 122, 129)", "rgb(113, 78, 36)", 0.4);
+        const skyLight      = "rgb(74, 89, 105)";
+        const groundLight   = "rgb(113, 78, 36)";
+
+        this.hemisphereLight = new THREE.HemisphereLight(skyLight, groundLight, 1);
         this.hemisphereLight.position.set(0, 100, 0);
 
-        this.mainLight = new THREE.DirectionalLight("rgb(244, 244, 230)", 0.75);
+        this.mainLight = new THREE.DirectionalLight("rgb(74, 89, 105)", 2);
         this.mainLight.position.set(0, 10, 0);
         this.mainLight.target.position.set(0, 0, 0);
         this.mainLight.castShadow = true;
