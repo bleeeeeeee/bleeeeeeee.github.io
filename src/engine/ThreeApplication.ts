@@ -55,6 +55,9 @@ export class ThreeApplication extends Framework.BaseApplication {
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         this.renderer.shadowMap.autoUpdate = true;
 
+        this.renderer.toneMappingExposure = 0.2;
+        this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+
         this.sceneManager.set("main-scene", new MainScene({
             renderer:     this.renderer,
             sceneManager: this.sceneManager,
