@@ -12,6 +12,7 @@
     },
     "dependencies": {
         "three": "^0.139.0",
+        "troika-three-text": "^0.46.4",
         "ts-md5": "^1.2.11"
     },
     "devDependencies": {
