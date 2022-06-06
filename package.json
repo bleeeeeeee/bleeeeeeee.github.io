@@ -11,6 +11,7 @@
         "test": "echo No tests available"
     },
     "dependencies": {
+        "postprocessing": "^6.27.0",
         "react": "^18.1.0",
         "react-dom": "^18.1.0",
         "three": "^0.141.0",

@@ -49,13 +49,20 @@ export class ThreeApplication extends Framework.BaseApplication {
 
     public constructor(canvas?: HTMLCanvasElement) {
 
-        super(canvas, { antialias: true, });
+        super(canvas, { 
+            powerPreference: "high-performance",
+            antialias: false,
+            stencil: false,
+            depth: true,
+        });
 
         this.renderer.shadowMap.enabled = true;
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         this.renderer.shadowMap.autoUpdate = true;
 
-        this.renderer.toneMappingExposure = 0.2;
+        this.renderer.outputEncoding = THREE.sRGBEncoding;
+
+        this.renderer.toneMappingExposure = 0.1;
         this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
 
         this.sceneManager.set("main-scene", new MainScene({

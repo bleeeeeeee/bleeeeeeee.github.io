@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import * as Framework from "./framework/BaseScene";
+import * as POSTPROCESSING from "postprocessing";
 
 import { ThreeApplication } from "./ThreeApplication";
 
@@ -33,15 +34,17 @@ export class MainScene extends Framework.BaseScene {
     private readonly ground: THREE.Mesh;
     private readonly player: THREE.Object3D;
 
+    private readonly trees: THREE.Points;
+    private readonly treesGeometry: THREE.BufferGeometry;
+    // private readonly treesMaterial: THREE.PointsMaterial;
+    private readonly singleTree: THREE.Object3D;
+
     private readonly ambientLight: THREE.AmbientLight;
     private readonly hemisphereLight: THREE.HemisphereLight;
     private readonly mainLight: THREE.DirectionalLight;
     private readonly flashLight: THREE.PointLight;
 
     // private OrbitControls: OrbitControls;
-
-    private readonly startTextMaterial: THREE.MeshStandardMaterial;
-    private readonly startText: THREE.Mesh;
 
     private readonly cameraMatUpdateCallback: (e: UIEvent) => void;
 
@@ -56,7 +59,7 @@ export class MainScene extends Framework.BaseScene {
         this.camera.position.y = 2.0;
         // this.camera.position.x = 2.0;
         this.camera.position.z = 3.0;
-        this.camera.lookAt(new THREE.Vector3(0, 0.1, -5)); // 0.1
+        this.camera.lookAt(new THREE.Vector3(0, 1.0, -5)); // 0.1
         
         // background texture
 
@@ -118,7 +121,7 @@ export class MainScene extends Framework.BaseScene {
             color: "rgb(94, 159, 243)",
             size: 0.1,
             transparent: true,
-            opacity: 0.6,
+            opacity: 1,
             fog: true,
         });
 
@@ -153,6 +156,28 @@ export class MainScene extends Framework.BaseScene {
         this.ground.name = "ground";
         this.ground.rotation.x = -Math.PI / 2;
 
+        // const borderMaterial = new THREE.LineBasicMaterial({
+        //     color: 0x0000ff
+        // });
+        
+        // const borderRightPoints = [];
+        // borderRightPoints.push( new THREE.Vector3( 3, 1, -250 ) );
+        // borderRightPoints.push( new THREE.Vector3( 3, 1, 250 ) );
+        
+        // const borderRightGeometry = new THREE.BufferGeometry().setFromPoints( borderRightPoints );
+        
+        // const borderRight = new THREE.Line( borderRightGeometry, borderMaterial );
+        // this.add( borderRight );
+        
+        // const borderLeftPoints = [];
+        // borderLeftPoints.push( new THREE.Vector3( -3, 1, -250 ) );
+        // borderLeftPoints.push( new THREE.Vector3( -3, 1, 250 ) );
+        
+        // const borderLeftGeometry = new THREE.BufferGeometry().setFromPoints( borderLeftPoints );
+        
+        // const borderLeft = new THREE.Line( borderLeftGeometry, borderMaterial );
+        // this.add( borderLeft );
+
         // main world lighting
 
         this.ambientLight = new THREE.AmbientLight("rgb(69, 76, 86)", 0.7);
@@ -177,7 +202,7 @@ export class MainScene extends Framework.BaseScene {
 
         // player model
 
-        const playerScale = 0.25;
+        const playerScale = 0.3;
         this.player = new THREE.Object3D();
 
         this.GLTFLoader = new GLTFLoader();
@@ -195,6 +220,7 @@ export class MainScene extends Framework.BaseScene {
 
                 player.scene.scale.set(playerScale, playerScale, playerScale);
                 player.scene.rotation.y = Math.PI;
+
                 this.player.castShadow = true;
                 this.player.receiveShadow = true;
                 this.player.add(player.scene);
@@ -206,27 +232,72 @@ export class MainScene extends Framework.BaseScene {
             
         );
 
+        this.player.position.set(0, 0, 0);
+
         // the start
 
-        const startLight0 = new THREE.SpotLight("rgb(45, 54, 6)", 100, 5, Math.PI, 4, 1.25);
-        startLight0.position.set(2, 4, 231);
+        const startLight0 = new THREE.SpotLight("rgb(72, 88, 105)", 5, 10, Math.PI, 4, 1.25);
+        startLight0.position.set(10, 2, 230);
         startLight0.target.position.set(0, 0, 0);
         startLight0.castShadow = true;
         this.add(startLight0);
 
-        const startLight1 = new THREE.SpotLight("rgb(0, 54, 6)", 100, 5, Math.PI, 4, 1.25);
-        startLight1.position.set(0, 4, 229);
+        const startLight1 = new THREE.SpotLight("rgb(31, 56, 82)", 15, 10, Math.PI, 4, 1.25);
+        startLight1.position.set(0, 2, 230);
         startLight1.target.position.set(0, 0, 0);
         startLight1.castShadow = true;
         this.add(startLight1);
 
-        const startLight2 = new THREE.SpotLight("rgb(45, 0, 6)", 100, 5, Math.PI, 4, 1.25);
-        startLight2.position.set(-2, 4, 231);
+        const startLight2 = new THREE.SpotLight("rgb(109, 127, 145)", 5, 10, Math.PI, 4, 1.25);
+        startLight2.position.set(-10, 2, 230);
         startLight2.target.position.set(0, 0, 0);
         startLight2.castShadow = true;
         this.add(startLight2);
 
-        //
+        // trees and foley
+        
+        for(let i = 0; i < 500; i++) {
+
+            const Random110 = Math.floor(Math.random() * 10) + 1;
+            
+            this.GLTFLoader.load(
+                
+                "/resources/objects/trees/mesh/tree_" + Random110 + ".glb", 
+                // "/resources/objects/trees/mesh/tree_1.glb", 
+                
+                ( tree: GLTF ) => {
+
+                    
+                    tree.scene.scale.set(5, 5, 5);
+                    tree.scene.rotation.y = Math.random() * Math.PI;
+                    tree.scene.position.set(
+                        Math.random() * 75 - 25,
+                        -0.25,
+                        Math.random() * 500 - 250,
+                    );
+
+                    tree.scene.castShadow = true;
+                    tree.scene.receiveShadow = true;
+                    
+                    const boundingBox = new THREE.Box3().setFromObject(tree.scene);
+                    boundingBox.expandByScalar(-0.75);
+                    // const helper = new THREE.Box3Helper( boundingBox, new THREE.Color( 0xffff00 ) );
+                    // this.add( helper );
+
+                    if(tree.scene.position.x > 5 || tree.scene.position.x < -5) {
+                        this.add(tree.scene);
+                    }
+
+                },
+            
+                ( event: ProgressEvent ) => { console.log((event.loaded / event.total) * 100 + "% loaded"); },
+                
+                ( event: ErrorEvent ) => { console.log(event); }
+            
+            );
+        }
+
+
 
         this.cameraMatUpdateCallback = ThreeApplication.createPerspectiveCameraResizer(this.renderer, this.camera);
     }
@@ -245,6 +316,18 @@ export class MainScene extends Framework.BaseScene {
     // };
 
     public onInitialization = (params: Framework.InitializeParameters) => {
+
+        // const composer = new POSTPROCESSING.EffectComposer(this.renderer);
+        // composer.addPass(new POSTPROCESSING.RenderPass(this, this.camera));
+        
+        // const SMAA = new POSTPROCESSING.SMAAEffect(POSTPROCESSING.SMAAPreset.HIGH);
+
+        // const chromaticAberration = new POSTPROCESSING.ChromaticAberrationEffect();
+        // const chromaticAberrationPass = new POSTPROCESSING.EffectPass(this.camera, chromaticAberration);
+
+        // composer.addPass(chromaticAberrationPass);
+
+        //
 
         this.managerKey = params.key;
         window.addEventListener("resize", this.cameraMatUpdateCallback);
@@ -290,7 +373,7 @@ export class MainScene extends Framework.BaseScene {
             if(this.flashLight.power < 100) 
                 this.flashLight.position.set(Math.random() * 400, 300 + Math.random() * 200, 100);
 
-            this.flashLight.power = 50 + Math.random() * 500;
+            this.flashLight.power = 50 + Math.random() * 700;
         }
         
         this.rain.position.y -= 0.2;
