@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { Mesh } from "three";
 import * as Framework from "./framework/BaseScene";
 import { Text } from "troika-three-text";
 
@@ -10,16 +11,18 @@ import { Button } from "../gui/Button";
 
 export class MainMenuScene extends Framework.BaseScene {
 
-    private readonly camera: THREE.PerspectiveCamera;
+    private readonly camera: THREE.OrthographicCamera;
 
-    private readonly playButton: Button;
-    private readonly restartButton: Button;
-    private readonly creditsButton: Button;
+    private readonly playButton: THREE.Mesh;
+    private readonly restartButton: THREE.Mesh;
+    private readonly creditsButton: THREE.Mesh;
+
+    private readonly dimmedBackground: THREE.Mesh;
+
+    // private readonly buttons: THREE.Group;
 
     private readonly raycaster: THREE.Raycaster;
     private readonly mousePosition: THREE.Vector2;
-
-    // private readonly orbitControls: OrbitControls;
 
     private readonly cameraMatUpdateCallback: (e: UIEvent) => void;
 
@@ -27,8 +30,6 @@ export class MainMenuScene extends Framework.BaseScene {
         
         this.mousePosition.x =  (event.clientX / window.innerWidth)  * 2 - 1;
         this.mousePosition.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-        console.log(this.mousePosition);
         
     }
 
@@ -38,10 +39,8 @@ export class MainMenuScene extends Framework.BaseScene {
 
         super(params);
 
-        this.camera = new THREE.PerspectiveCamera(100, window.innerWidth / window.innerHeight, 0.1, 1000);
-        this.camera.position.x = 0.0;
-        this.camera.position.y = 0.0;
-        this.camera.position.z = 10.0;
+        this.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 1000);
+        this.camera.position.z = 1;
         this.add(this.camera);
 
         this.playButton = new Button({
@@ -76,23 +75,27 @@ export class MainMenuScene extends Framework.BaseScene {
     
         // const axesHelper = new THREE.AxesHelper( 200 );
         // this.add( axesHelper );
-    }
+      
+        this.dimmedBackground = new THREE.Mesh(
+            new THREE.PlaneGeometry(2, 2, 10, 10),
+            new THREE.MeshBasicMaterial({
+                color: "rgb(0, 0, 0)",
+                transparent: true,
+                opacity: 0.5,
+            }),
+        );
+        this.dimmedBackground.position.z = -0.1;
+        this.add(this.dimmedBackground);
 
-    public onInitialization = (params: Framework.InitializeParameters) => {
-
-        this.managerKey = params.key;
         document.addEventListener("mousemove", this.onDocumentMouseMove.bind(this));
 
         this.add(this.playButton, this.restartButton, this.creditsButton);
+      
+    }
 
-        this.renderer.setClearColor("rgb(0, 0, 0)", 0.5);
-    
-    };
-    
     public onDestruction = () => {
     
         document.removeEventListener("mousemove", this.onDocumentMouseMove.bind(this));
-        this.renderer.setClearColor("rgb(0, 0, 0)", 1);
 
     };
       
@@ -107,16 +110,15 @@ export class MainMenuScene extends Framework.BaseScene {
         if (KeyHandler.isButtonPressed(0)) {
       
             if (intersectsPlayButton.length) {
-                this.sceneManager.setCurrent("main-scene");
+                this.sceneManager.pop();
             }
 
             if (intersectsRestartButton.length) {
-                this.sceneManager.setCurrent("main-scene");
-                // + restart position and counter
+                this.sceneManager.pop();
             }
 
             if (intersectsCreditsButton.length) {
-                this.sceneManager.setCurrent("credits-scene");
+                // this.sceneManager.setCurrent("credits-scene");
             }
       
         }

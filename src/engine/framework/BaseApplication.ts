@@ -28,6 +28,7 @@ export class BaseApplication {
             ...renderParameters,
         });
         this.renderer.setSize(innerWidth, innerHeight);
+        this.renderer.autoClear = false;
 
         this.sceneManager = new SceneManager();
 
@@ -40,11 +41,50 @@ export class BaseApplication {
     public running = () => this.isRunning;
 
     public onInitialization = () => {};
-    public onDestruction    = () => {};
 
     public gameLoop: THREE.XRAnimationLoopCallback = (time: number, _frame?: THREE.XRFrame) => {
 
-        if (this.sceneManager.getCurrent() === undefined) {
+        // if (this.sceneManager.getCurrent() === undefined) {
+
+        //     this.isRunning = false;
+        //     this.renderer.setAnimationLoop(null);
+        //     this.renderer.clear();
+
+        // }
+
+        // this.deltaTime = (time - this.lastTime) / 1000;
+        // this.lastTime = time;
+
+        // this.sceneTime = this.lastFrameScene == this.sceneManager.getCurrent()
+        //     ? this.sceneTime += this.deltaTime : 0;
+
+        // this.lastFrameScene = this.sceneManager.getCurrent();
+
+        // this.sceneManager.getCurrent()?.onUpdate({
+        //     deltaTime: this.deltaTime,
+        //     sceneTime: this.sceneTime,
+        //     totalTime: time,
+        // });
+
+        // this.sceneManager.getCurrent()?.onRender({
+        //     //renderer: this.renderer,
+        // });
+
+        this.deltaTime = (time - this.lastTime) / 1000;
+        this.lastTime = time;
+
+        this.sceneTime = this.lastFrameScene == this.sceneManager.top()
+            ? this.sceneTime += this.deltaTime : 0;
+        
+        this.lastFrameScene = this.sceneManager.top();
+
+        this.sceneManager.top()?.onUpdate({
+            deltaTime: this.deltaTime,
+            sceneTime: this.sceneTime,
+            totalTime: time,
+        });
+
+        if (this.sceneManager.top() === undefined) {
 
             this.isRunning = false;
             this.renderer.setAnimationLoop(null);
@@ -52,31 +92,48 @@ export class BaseApplication {
 
         }
 
-        this.deltaTime = (time - this.lastTime) / 1000;
-        this.lastTime = time;
+        const updatables = this.sceneManager.getUpdatables();
 
-        this.sceneTime = this.lastFrameScene == this.sceneManager.getCurrent()
-            ? this.sceneTime += this.deltaTime : 0;
+        this.renderer.clear();
+        // for (let i = updatables.length - 1; i >= 0; --i) {
+            // updatables[i].onRender({
+                // renderer: this.renderer,
+            // });
+        // }
 
-        this.lastFrameScene = this.sceneManager.getCurrent();
+        for (const element of updatables.reverse()) {
+            element.onRender({ });
+        }
 
-        this.sceneManager.getCurrent()?.onUpdate({
-            deltaTime: this.deltaTime,
-            sceneTime: this.sceneTime,
-            totalTime: time,
-        });
+        // for (const scene of this.sceneManager.getUpdatables()!) {
 
-        this.sceneManager.getCurrent()?.onRender({
-            //renderer: this.renderer,
-        });
+            // scene.onRender({ });
+
+        // }
+
+        // this.sceneManager.top()?.onUpdate({
+        //     deltaTime: this.deltaTime,
+        //     sceneTime: this.sceneTime,
+        //     totalTime: time,
+        // });
+
+        // if (this.sceneManager.top() === undefined) {
+
+        //     this.isRunning = false;
+        //     this.renderer.setAnimationLoop(null);
+        //     this.renderer.clear();
+
+        // }
+
+        // this.sceneManager.top()?.onRender({ });
 
     };
 
-    public run = () => {
+    public run = (): void => {
 
         this.isRunning = true;
         this.renderer.setAnimationLoop(this.gameLoop);
 
-    } ;
+    };
 
 }

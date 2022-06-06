@@ -11,20 +11,14 @@
         "test": "echo No tests available"
     },
     "dependencies": {
-        "react": "^18.0.0",
-        "react-dom": "^18.0.0",
         "three": "^0.139.0",
         "troika-three-text": "^0.46.4",
         "ts-md5": "^1.2.11"
     },
     "devDependencies": {
-        "@types/node": "^17.0.36",
-        "@types/react": "^17.0.43",
-        "@types/react-dom": "^17.0.14",
         "@types/three": "^0.139.0",
         "@typescript-eslint/eslint-plugin": "^5.17.0",
         "@typescript-eslint/parser": "^5.17.0",
-        "@vitejs/plugin-react": "^1.0.7",
         "eslint": "^8.12.0",
         "typescript": "^4.5.4",
         "vite": "^2.8.0"
