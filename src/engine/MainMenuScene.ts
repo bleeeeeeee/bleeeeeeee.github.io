@@ -7,15 +7,13 @@ import { Buttons, KeyHandler } from "./framework/KeyHandler";
 
 import { Button } from "../gui/Button";
 
-// import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-
 export class MainMenuScene extends Framework.BaseScene {
 
     private readonly camera: THREE.OrthographicCamera;
 
-    private readonly playButton: THREE.Mesh;
-    private readonly restartButton: THREE.Mesh;
-    private readonly creditsButton: THREE.Mesh;
+    private readonly playButton: Button;
+    private readonly restartButton: Button;
+    private readonly creditsButton: Button;
 
     private readonly dimmedBackground: THREE.Mesh;
 
@@ -44,8 +42,8 @@ export class MainMenuScene extends Framework.BaseScene {
         this.add(this.camera);
 
         this.playButton = new Button({
-            position: new THREE.Vector3(0, 5, 0),
-            size: new THREE.Vector2(14, 3.5),
+            position: new THREE.Vector3(0, .5, 0),
+            size: new THREE.Vector2(0.6, 0.4),
             text: "play",
             fontSize: 2.5,
             fontColor: "rgb(246, 246, 246)",
@@ -53,15 +51,15 @@ export class MainMenuScene extends Framework.BaseScene {
 
         this.restartButton = new Button({
             position: new THREE.Vector3(0, 0, 0),
-            size: new THREE.Vector2(14, 3.5),
+            size: new THREE.Vector2(0.6, 0.4),
             text: "restart",
             fontSize: 2.5,
             fontColor: "rgb(246, 246, 246)",
         });
 
         this.creditsButton = new Button({
-            position: new THREE.Vector3(0, -5, 0),
-            size: new THREE.Vector2(14, 3.5),
+            position: new THREE.Vector3(0, -.5, 0),
+            size: new THREE.Vector2(0.6, 0.4),
             text: "credits",
             fontSize: 2.5,
             fontColor: "rgb(246, 246, 246)",
@@ -69,12 +67,6 @@ export class MainMenuScene extends Framework.BaseScene {
 
         this.raycaster = new THREE.Raycaster();
         this.mousePosition = new THREE.Vector2();
-
-        // this.orbitControls = new OrbitControls(this.camera, this.renderer.domElement);
-        // this.orbitControls.enablePan = false;
-    
-        // const axesHelper = new THREE.AxesHelper( 200 );
-        // this.add( axesHelper );
       
         this.dimmedBackground = new THREE.Mesh(
             new THREE.PlaneGeometry(2, 2, 10, 10),
