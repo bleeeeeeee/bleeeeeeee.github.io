@@ -44,8 +44,12 @@ export class Button extends THREE.Group {
         this.text.color     = params.fontColor || "0x000000";
         // this.text.textAlign = "center";
         this.text.maxWidth  = params.size.x;
-        this.text.anchorX   = params.size.x / 2 - (this.text.text.length == 4 ? 4.8 : 3.2);
-        this.text.anchorY   = -params.position.y - params.size.y / 2 + 0.18;
+        // this.text.anchorX = 0.5;
+        // this.text.anchorY = 0.5;
+        // this.text.anchorX   = params.size.x / 2 - (this.text.text.length == 0.4 ? 4.8 : 3.2);
+        // this.text.anchorY   = -params.position.y - params.size.y / 2 + 0.18;
+
+        console.log(this.text.position);
 
         this.add(this.text);
         

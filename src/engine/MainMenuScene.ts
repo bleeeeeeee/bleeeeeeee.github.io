@@ -9,7 +9,8 @@ import { Button } from "../gui/Button";
 
 export class MainMenuScene extends Framework.BaseScene {
 
-    private readonly camera: THREE.OrthographicCamera;
+    // private readonly camera: THREE.OrthographicCamera;
+    private readonly camera: THREE.PerspectiveCamera;
 
     private readonly playButton: Button;
     private readonly restartButton: Button;
@@ -31,14 +32,16 @@ export class MainMenuScene extends Framework.BaseScene {
         
     }
 
-    private readonly testText = new Text();
-
     public constructor(params: Framework.BaseSceneParameters) {
 
         super(params);
 
-        this.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 1000);
-        this.camera.position.z = 1;
+        // this.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 1000);
+        // this.camera.position.z = 1;
+        // this.add(this.camera);
+
+        this.camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+        this.camera.position.z = 5;
         this.add(this.camera);
 
         this.playButton = new Button({
