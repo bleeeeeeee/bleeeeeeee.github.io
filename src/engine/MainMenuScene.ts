@@ -51,7 +51,7 @@ export class MainMenuScene extends Framework.BaseScene {
         this.playButton = new Button({
             position: new THREE.Vector3(0, .5, 0),
             size: new THREE.Vector2(0.6, 0.4),
-            text: "play",
+            text: "PLAY ",
             fontSize: 2.5,
             fontColor: "rgb(246, 246, 246)",
         });
