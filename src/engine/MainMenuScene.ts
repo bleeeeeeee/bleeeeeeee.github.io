@@ -7,6 +7,8 @@ import { Buttons, KeyHandler } from "./framework/KeyHandler";
 
 import { Button } from "../gui/Button";
 
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+
 export class MainMenuScene extends Framework.BaseScene {
 
     // private readonly camera: THREE.OrthographicCamera;
@@ -25,6 +27,8 @@ export class MainMenuScene extends Framework.BaseScene {
 
     private readonly cameraMatUpdateCallback: (e: UIEvent) => void;
 
+    private readonly orbitControls: OrbitControls;
+
     private onDocumentMouseMove(event: MouseEvent): void {   
         
         this.mousePosition.x =  (event.clientX / window.innerWidth)  * 2 - 1;
@@ -41,7 +45,7 @@ export class MainMenuScene extends Framework.BaseScene {
         // this.add(this.camera);
 
         this.camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
-        this.camera.position.z = 5;
+        this.camera.position.z = 1;
         this.add(this.camera);
 
         this.playButton = new Button({
@@ -85,6 +89,9 @@ export class MainMenuScene extends Framework.BaseScene {
         document.addEventListener("mousemove", this.onDocumentMouseMove.bind(this));
 
         this.add(this.playButton, this.restartButton, this.creditsButton);
+
+        // this.orbitControls = new OrbitControls(this.camera, this.renderer.domElement);
+        // this.orbitControls.enablePan = false;
       
     }
 
