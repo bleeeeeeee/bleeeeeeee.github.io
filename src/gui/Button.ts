@@ -1,11 +1,5 @@
-// Beware of the horrifying line below!
-// TODO: either write typescript definitions file for troika-three-text or find a better way to implement text rendering.
-
 import * as THREE from "three";
 
-// import { Text } from "troika-three-text";
-
-import { TTFLoader } from "three/examples/jsm/loaders/TTFLoader";
 import { Font, FontLoader } from "three/examples/jsm/loaders/FontLoader";
 import { TextGeometry, TextGeometryParameters } from "three/examples/jsm/geometries/TextGeometry";
 
@@ -29,16 +23,25 @@ export class Button extends THREE.Group {
 
         super();
 
-        const shapeGeometry = new THREE.PlaneGeometry(params.size.x, params.size.y, 1, 1);
-        const shapeMaterial = new THREE.MeshBasicMaterial({
+        const shapeGeometry = new THREE.PlaneGeometry(params.size.x, params.size.y, 10, 10);
+        const shapeMaterial = new THREE.MeshPhongMaterial({
             color: "rgb(66, 66, 66)",
             transparent: true,
-            alphaMap: null,
+            opacity: 0.85,
+            flatShading: true,
         });
 
         this.shape = new THREE.Mesh(shapeGeometry, shapeMaterial);
         this.shape.position.copy(params.position);
         this.add(this.shape);
+
+        const shapePositions = shapeGeometry.attributes["position"];
+        for (let i = 0; i < shapePositions.count; ++i) {
+
+            if (i % 2) continue;
+            shapePositions.setZ(i, shapePositions.getZ(i) - Math.random() / 10);
+
+        }
 
         this.text = new THREE.Mesh();
 
@@ -46,23 +49,22 @@ export class Button extends THREE.Group {
 
         const fontLoader = new FontLoader();
         fontLoader.load(
-            "node_modules/three/examples/fonts/helvetiker_regular.typeface.json",
+            // "node_modules/three/examples/fonts/optimer_bold.typeface.json",
+            "resources/fonts/optimer_bold.typeface.json",
             (font: Font) => {
+
                 const textGeometry = new TextGeometry(params.text as string, {
                     height: 0.01,
                     size: 0.10,
                     font: font,
                 });
                 const textMaterial = new THREE.MeshBasicMaterial({
-                    color: 0xffffff
+                    color: 0xffffff,
                 });
 
                 const textSize = new THREE.Vector3();
                 textGeometry.computeBoundingBox();
                 textGeometry.boundingBox?.getSize(textSize);
-
-                // const newPositionX = params.position.x + (shapeGeometry.parameters.width / 2 - textSize.x / 2);
-                // const newPositionY = params.position.y + (shapeGeometry.parameters.height / 2 - textSize.y / 2);
 
                 const newPositionX = params.position.x - (textSize.x / 2);
                 const newPositionY = params.position.y - (textSize.y / 2);
@@ -73,6 +75,7 @@ export class Button extends THREE.Group {
                 this.text.position.set(newPositionX, newPositionY, 0);
                 this.text.name = "text";
                 this.add(this.text);
+
             },
             () => {},
             (error: ErrorEvent) => console.error("Failed to load the font: " + error.message),

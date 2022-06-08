@@ -1,7 +1,6 @@
 import * as THREE from "three";
 import { Mesh } from "three";
 import * as Framework from "./framework/BaseScene";
-import { Text } from "troika-three-text";
 
 import { Buttons, KeyHandler } from "./framework/KeyHandler";
 
@@ -18,6 +17,8 @@ export class MainMenuScene extends Framework.BaseScene {
     private readonly restartButton: Button;
     private readonly creditsButton: Button;
 
+    private readonly pointLight: THREE.PointLight;
+    private readonly pointLightHelper: THREE.PointLightHelper;
     private readonly dimmedBackground: THREE.Mesh;
 
     // private readonly buttons: THREE.Group;
@@ -51,7 +52,7 @@ export class MainMenuScene extends Framework.BaseScene {
         this.playButton = new Button({
             position: new THREE.Vector3(0, .5, 0),
             size: new THREE.Vector2(0.6, 0.4),
-            text: "PLAY ",
+            text: "PLAY",
             fontSize: 2.5,
             fontColor: "rgb(246, 246, 246)",
         });
@@ -59,7 +60,7 @@ export class MainMenuScene extends Framework.BaseScene {
         this.restartButton = new Button({
             position: new THREE.Vector3(0, 0, 0),
             size: new THREE.Vector2(0.6, 0.4),
-            text: "restart",
+            text: "RESTART",
             fontSize: 2.5,
             fontColor: "rgb(246, 246, 246)",
         });
@@ -67,7 +68,7 @@ export class MainMenuScene extends Framework.BaseScene {
         this.creditsButton = new Button({
             position: new THREE.Vector3(0, -.5, 0),
             size: new THREE.Vector2(0.6, 0.4),
-            text: "credits",
+            text: "CREDITS",
             fontSize: 2.5,
             fontColor: "rgb(246, 246, 246)",
         });
@@ -75,6 +76,10 @@ export class MainMenuScene extends Framework.BaseScene {
         this.raycaster = new THREE.Raycaster();
         this.mousePosition = new THREE.Vector2();
       
+        this.pointLight = new THREE.PointLight(0xffffff, 1, 0);
+        this.pointLight.position.set(0, 0, 5);
+        this.add(this.pointLight);
+
         this.dimmedBackground = new THREE.Mesh(
             new THREE.PlaneGeometry(2, 2, 10, 10),
             new THREE.MeshBasicMaterial({
