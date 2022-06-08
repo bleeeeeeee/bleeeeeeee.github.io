@@ -509,6 +509,56 @@ export class MainScene extends Framework.BaseScene {
             );
         }
 
+        this.GLTFLoader.load(
+                
+            "/resources/objects/rocks/rock-3.glb", 
+            
+            ( rock: GLTF ) => {
+                
+                rock.scene.scale.setScalar(4);
+                rock.scene.position.set(
+                    -15,
+                    -0.2,
+                    -(this.WORLD_DEPTH / 2),
+                );
+
+                rock.scene.castShadow = true;
+                rock.scene.receiveShadow = true;
+
+                this.rockGroup.add(rock.scene);
+
+            },
+        
+            ( event: ProgressEvent ) => { console.log((event.loaded / event.total) * 100 + "% loaded"); },
+            
+            ( event: ErrorEvent ) => { console.log(event); }
+        );
+
+        this.GLTFLoader.load(
+                
+            "/resources/objects/rocks/rock-4.glb", 
+            
+            ( rock: GLTF ) => {
+                
+                rock.scene.scale.setScalar(4);
+                rock.scene.position.set(
+                    10,
+                    -0.2,
+                    -(this.WORLD_DEPTH / 2) - 10,
+                );
+
+                rock.scene.castShadow = true;
+                rock.scene.receiveShadow = true;
+
+                this.rockGroup.add(rock.scene);
+
+            },
+        
+            ( event: ProgressEvent ) => { console.log((event.loaded / event.total) * 100 + "% loaded"); },
+            
+            ( event: ErrorEvent ) => { console.log(event); }
+        );
+
         // PLAYER (CAT) //
 
         const playerScale = 3.5;
@@ -598,7 +648,7 @@ export class MainScene extends Framework.BaseScene {
 
     public onUpdate = (params: Framework.UpdateParameters) => {
         
-        const SPEED = 20;
+        const SPEED = 100;
         const distance = SPEED * params.deltaTime;
 
         if (KeyHandler.isKeyPressed("w")) {
