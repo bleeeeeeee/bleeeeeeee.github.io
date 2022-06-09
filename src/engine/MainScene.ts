@@ -601,9 +601,6 @@ export class MainScene extends Framework.BaseScene {
         //
 
         this.cameraMatUpdateCallback = ThreeApplication.createPerspectiveCameraResizer(this.renderer, this.camera);
-    }
-
-    public onInitialization = (params: Framework.InitializeParameters) => {
 
         this.clock = new THREE.Clock();
 
@@ -612,8 +609,6 @@ export class MainScene extends Framework.BaseScene {
 
 
         //
-
-        this.managerKey = params.key;
 
         window.addEventListener("resize", this.cameraMatUpdateCallback);
 
@@ -641,7 +636,6 @@ export class MainScene extends Framework.BaseScene {
 
         this.timeElapsedFlashlight = 0;
         this.flashlight.visible = false;
-
     }
 
     public onDestruction = () => {
@@ -674,13 +668,15 @@ export class MainScene extends Framework.BaseScene {
         if (KeyHandler.isKeyPressed("l") && this.timeElapsedFlashlight >= 1) {
             this.flashlight.visible = !this.flashlight.visible;
             this.timeElapsedFlashlight = 0;
-          
+        }
+
         if (KeyHandler.isKeyPressed("Escape")) {
             this.sceneManager.push(new MainMenuScene({
                 renderer:     this.renderer,
                 sceneManager: this.sceneManager,
             }));
         }
+
         this.timeElapsedFlashlight += params.deltaTime * 4;
         
         // RAIN, STRUCKLIGHTS AND THUNDERSTRUCKS //
