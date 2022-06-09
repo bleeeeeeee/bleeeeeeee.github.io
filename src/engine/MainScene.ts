@@ -239,37 +239,58 @@ export class MainScene extends Framework.BaseScene {
         this.treesBackground2.position.set(-20, 10, 0);
         this.treesBackground2.rotation.set(0, (Math.PI / 2), 0);
 
-        const textureLoader = new THREE.TextureLoader();
+        const gtDIFF   = new THREE.TextureLoader().load("/resources/textures/betterground/_COL_1K.png");
+        const gtNRM    = new THREE.TextureLoader().load("/resources/textures/betterground/NRM_1K.png");
+        const gtAO     = new THREE.TextureLoader().load("/resources/textures/betterground/AO_1K.png");
 
-        const groundTextureDiff: THREE.Texture = textureLoader.load("resources/textures/betterground/_COL_1K.png");
-        const groundTextureNorm: THREE.Texture = textureLoader.load("resources/textures/betterground/NRM_1K.png");
-        const groundTextureAo:   THREE.Texture = textureLoader.load("resources/textures/betterground/AO_1K.png");
-
-        groundTextureDiff.wrapS = groundTextureDiff.wrapT =
-        groundTextureNorm.wrapS = groundTextureNorm.wrapT =
-        groundTextureAo.wrapS   = groundTextureAo.wrapT   = THREE.RepeatWrapping;
+        gtDIFF.wrapS = gtDIFF.wrapT = gtNRM.wrapS = gtNRM.wrapT =
+        gtAO.wrapS   = gtAO.wrapT   = THREE.RepeatWrapping;
 
         const groundRepeatVectorS = 30;
         const groundRepeatVectorT = 2 * groundRepeatVectorS;
 
-        groundTextureDiff.repeat.set(groundRepeatVectorS, groundRepeatVectorT);
-        groundTextureNorm.repeat.set(groundRepeatVectorS, groundRepeatVectorT);
-        groundTextureAo.repeat.set(groundRepeatVectorS, groundRepeatVectorT);
+        gtDIFF.repeat.set(groundRepeatVectorS, groundRepeatVectorT);
+        gtNRM.repeat.set(groundRepeatVectorS, groundRepeatVectorT);
+        gtAO.repeat.set(groundRepeatVectorS, groundRepeatVectorT);
 
         const xOffset = .5;
         const yOffset = .25;  
 
-        groundTextureDiff.repeat.set(xOffset, yOffset);
-        groundTextureNorm.repeat.set(xOffset, yOffset);
-        groundTextureAo.repeat.set(xOffset, yOffset);
+        gtDIFF.offset.set(xOffset, yOffset);
+        gtNRM.offset.set(xOffset, yOffset);
+        gtAO.offset.set(xOffset, yOffset);
+
+        // const textureLoader = new THREE.TextureLoader();
+
+        // const groundTextureDiff: THREE.Texture = textureLoader.load("resources/textures/betterground/_COL_1K.png");
+        // const groundTextureNorm: THREE.Texture = textureLoader.load("resources/textures/betterground/NRM_1K.png");
+        // const groundTextureAo:   THREE.Texture = textureLoader.load("resources/textures/betterground/AO_1K.png");
+
+        // groundTextureDiff.wrapS = groundTextureDiff.wrapT =
+        // groundTextureNorm.wrapS = groundTextureNorm.wrapT =
+        // groundTextureAo.wrapS   = groundTextureAo.wrapT   = THREE.RepeatWrapping;
+
+        // const groundRepeatVectorS = 30;
+        // const groundRepeatVectorT = 2 * groundRepeatVectorS;
+
+        // groundTextureDiff.repeat.set(groundRepeatVectorS, groundRepeatVectorT);
+        // groundTextureNorm.repeat.set(groundRepeatVectorS, groundRepeatVectorT);
+        // groundTextureAo.repeat.set(groundRepeatVectorS, groundRepeatVectorT);
+
+        // const xOffset = .5;
+        // const yOffset = .25;  
+
+        // groundTextureDiff.repeat.set(xOffset, yOffset);
+        // groundTextureNorm.repeat.set(xOffset, yOffset);
+        // groundTextureAo.repeat.set(xOffset, yOffset);
 
         const groundMaterial = new THREE.MeshPhysicalMaterial({
             color: "rgb(41, 45, 60)",
-            map: groundTextureDiff,
-            normalMap: groundTextureNorm,
+            map: gtDIFF,
+            normalMap: gtNRM,
             normalMapType: THREE.TangentSpaceNormalMap,
             normalScale: new THREE.Vector2(2, 2),
-            aoMap: groundTextureAo,
+            aoMap: gtAO,
             aoMapIntensity: 10,
             side: THREE.FrontSide,
             shadowSide: THREE.FrontSide,
