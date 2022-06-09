@@ -11,7 +11,10 @@
         "test": "echo No tests available"
     },
     "dependencies": {
-        "three": "^0.139.0",
+        "postprocessing": "^6.27.0",
+        "react": "^18.1.0",
+        "react-dom": "^18.1.0",
+        "three": "^0.141.0",
         "ts-md5": "^1.2.11"
     },
     "devDependencies": {
