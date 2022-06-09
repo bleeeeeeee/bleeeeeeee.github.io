@@ -18,13 +18,10 @@ export class MainScene extends Framework.BaseScene {
     private readonly WORLD_WIDTH: number = 250;
     private readonly WORLD_DEPTH: number = 500;
 
-
-    private clock: THREE.Clock;
-
+    private readonly clock: THREE.Clock;
 
     private readonly GLTFLoader: GLTFLoader;
     private readonly audioLoader: THREE.AudioLoader;
-
 
     private readonly camera: THREE.PerspectiveCamera;
     private readonly flashlight: THREE.SpotLight;
@@ -36,7 +33,6 @@ export class MainScene extends Framework.BaseScene {
     private readonly foleyLights: THREE.Group;
     private readonly lampGroup: THREE.Group;
 
-    
     private readonly atmosphere: THREE.Mesh;
     private readonly audioListener: THREE.AudioListener;
     private readonly globalAudio: THREE.Audio;
@@ -49,7 +45,6 @@ export class MainScene extends Framework.BaseScene {
     private readonly rainCount: number = 200000;
     private readonly struckLight: THREE.PointLight;
 
-
     private readonly ground: THREE.Mesh;
     private readonly treesGroup: THREE.Group;
     private readonly treesBackground1: THREE.Mesh;
@@ -58,7 +53,6 @@ export class MainScene extends Framework.BaseScene {
     private readonly grassMesh: THREE.InstancedMesh;
     private readonly rockGroup: THREE.Group;
 
-
     private readonly player: THREE.Object3D;
     private animationMixer: THREE.AnimationMixer;
     private animationClip: THREE.AnimationClip;
@@ -66,9 +60,7 @@ export class MainScene extends Framework.BaseScene {
     private readonly activeAction: THREE.AnimationAction;
     private readonly lastAction: THREE.AnimationAction;
 
-
     private readonly cameraMatUpdateCallback: (e: UIEvent) => void;
-
 
     public constructor(params: Framework.BaseSceneParameters) {
 
@@ -77,27 +69,23 @@ export class MainScene extends Framework.BaseScene {
         this.GLTFLoader = new GLTFLoader();
         this.audioLoader = new THREE.AudioLoader();
 
-        // MAIN CAMERA //
-
         this.camera = new THREE.PerspectiveCamera(50, (innerWidth / innerHeight), 0.1, 1000.0);
         this.camera.name = "main-camera";
         this.camera.position.y = 3.0;
-        // this.camera.position.x = 2.0;
         this.camera.position.z = 4.0;
         this.camera.lookAt(new THREE.Vector3(0, 0.5, -5)); 
-
-        // FLASHLIGHT //
 
         this.flashlight = new THREE.SpotLight(0xffffff, 20, 20, Math.PI * 0.1, 0.2, 1);
         this.flashlight.position.set(0, 1, -1);
         this.flashlight.target.position.set(0, 0, -500);
-        
-        // WORLD LIGHTING //
 
         this.ambientLight = new THREE.AmbientLight("rgb(69, 76, 86)", 0.5);
 
-        const skyLight      = "rgb(69, 76, 86)";
-        const groundLight   = "rgb(113, 78, 36)";
+        // const skyLight      = "rgb(69, 76, 86)";
+        // const groundLight   = "rgb(113, 78, 36)";
+
+        const skyLight:    THREE.ColorRepresentation = 0x454c56;
+        const groundLight: THREE.ColorRepresentation = 0x714e24;
 
         this.hemisphereLight = new THREE.HemisphereLight(skyLight, groundLight, 0.9);
         this.hemisphereLight.position.set(0, 100, 0);
@@ -106,16 +94,16 @@ export class MainScene extends Framework.BaseScene {
         this.mainLight.position.set(0, 100, 0);
         this.mainLight.target.position.set(0, 0, 0);
 
-        this.mainLight.castShadow           = true;
-        this.mainLight.shadow.bias          = -0.004;
-        this.mainLight.shadow.camera.near   = 0.1;
-        this.mainLight.shadow.camera.far    = 1000;
-        this.mainLight.shadow.camera.left   = this.mainLight.shadow.camera.bottom  = -1000;
-        this.mainLight.shadow.camera.top    = this.mainLight.shadow.camera.right   = 1000;
+        this.mainLight.castShadow = true;
+        this.mainLight.shadow.bias = -0.004;
+        this.mainLight.shadow.camera.near = 0.1;
+        this.mainLight.shadow.camera.far = 1000;
+        this.mainLight.shadow.camera.left = this.mainLight.shadow.camera.bottom = -1000;
+        this.mainLight.shadow.camera.top = this.mainLight.shadow.camera.right = 1000;
         this.mainLight.shadow.mapSize.width = this.mainLight.shadow.mapSize.height = 2048;
         
         this.foleyLights = new THREE.Group();
-        this.lampGroup   = new THREE.Group();
+        this.lampGroup = new THREE.Group();
 
         const startLight = new THREE.SpotLight("rgb(120, 120, 82)", 10, 6, Math.PI, 4, 1.1);
         startLight.position.set(0, 2, 230);
@@ -156,8 +144,6 @@ export class MainScene extends Framework.BaseScene {
 
         }
 
-        // ATMOSPHERE AND THUNDERSTORM //
-
         this.audioListener = new THREE.AudioListener();
         this.camera.add(this.audioListener);
 
@@ -184,7 +170,7 @@ export class MainScene extends Framework.BaseScene {
         this.struckLight = new THREE.PointLight("rgb(22, 22, 22)", 100, 500, 0.9);
         this.struckLight.position.set(0, 200, 0);
 
-        const atmosphereColor    = new THREE.Color("rgb(52, 93, 109)");
+        const atmosphereColor = new THREE.Color("rgb(52, 93, 109)");
         const atmosphereGeometry = new THREE.BoxGeometry(this.WORLD_WIDTH, this.WORLD_HEIGHT, this.WORLD_DEPTH);
         const atmosphereMaterial = new THREE.MeshBasicMaterial({
             color: atmosphereColor,
@@ -197,7 +183,7 @@ export class MainScene extends Framework.BaseScene {
 
         this.fog = new THREE.Fog("rgb(50, 58, 66)", 1.0, 50.0);
         
-        const points = [];     
+        const points: THREE.Vector3[] = [];
     
         for(let i = 0; i < this.rainCount; i++) {
 
@@ -234,13 +220,13 @@ export class MainScene extends Framework.BaseScene {
         treesTexture2.repeat.set(15, 1);
 
         const treesMaterial1 = new THREE.MeshStandardMaterial({
-            color: "rgb(255, 255, 255)",
+            color: 0xffffff,
             side: THREE.FrontSide,
             map: treesTexture1,
         });
 
         const treesMaterial2 = new THREE.MeshStandardMaterial({
-            color: "rgb(255, 255, 255)",
+            color: 0xffffff,
             side: THREE.FrontSide,
             map: treesTexture2,
         });
@@ -253,39 +239,38 @@ export class MainScene extends Framework.BaseScene {
         this.treesBackground2.position.set(-20, 10, 0);
         this.treesBackground2.rotation.set(0, (Math.PI / 2), 0);
 
-        const gtDIFF   = new THREE.TextureLoader().load("/resources/textures/betterground/_COL_1K.png");
-        const gtNRM    = new THREE.TextureLoader().load("/resources/textures/betterground/NRM_1K.png");
-        const gtAO     = new THREE.TextureLoader().load("/resources/textures/betterground/AO_1K.png");
+        const textureLoader = new THREE.TextureLoader();
 
-        gtDIFF.wrapS = gtDIFF.wrapT = gtNRM.wrapS = gtNRM.wrapT =
-        gtAO.wrapS   = gtAO.wrapT   = THREE.RepeatWrapping;
+        const groundTextureDiff: THREE.Texture = textureLoader.load("resources/textures/betterground/_COL_1K.png");
+        const groundTextureNorm: THREE.Texture = textureLoader.load("resources/textures/betterground/NRM_1K.png");
+        const groundTextureAo:   THREE.Texture = textureLoader.load("resources/textures/betterground/AO_1K.png");
+
+        groundTextureDiff.wrapS = groundTextureDiff.wrapT =
+        groundTextureNorm.wrapS = groundTextureNorm.wrapT =
+        groundTextureAo.wrapS   = groundTextureAo.wrapT   = THREE.RepeatWrapping;
 
         const groundRepeatVectorS = 30;
         const groundRepeatVectorT = 2 * groundRepeatVectorS;
 
-        gtDIFF.repeat.set(groundRepeatVectorS, groundRepeatVectorT);
-        gtNRM.repeat.set(groundRepeatVectorS, groundRepeatVectorT);
-        gtAO.repeat.set(groundRepeatVectorS, groundRepeatVectorT);
+        groundTextureDiff.repeat.set(groundRepeatVectorS, groundRepeatVectorT);
+        groundTextureNorm.repeat.set(groundRepeatVectorS, groundRepeatVectorT);
+        groundTextureAo.repeat.set(groundRepeatVectorS, groundRepeatVectorT);
 
         const xOffset = .5;
         const yOffset = .25;  
 
-        gtDIFF.offset.set(xOffset, yOffset);
-        gtNRM.offset.set(xOffset, yOffset);
-        gtAO.offset.set(xOffset, yOffset);
+        groundTextureDiff.repeat.set(xOffset, yOffset);
+        groundTextureNorm.repeat.set(xOffset, yOffset);
+        groundTextureAo.repeat.set(xOffset, yOffset);
 
         const groundMaterial = new THREE.MeshPhysicalMaterial({
             color: "rgb(41, 45, 60)",
-
-            map: gtDIFF,
-
-            normalMap: gtNRM,
+            map: groundTextureDiff,
+            normalMap: groundTextureNorm,
             normalMapType: THREE.TangentSpaceNormalMap,
             normalScale: new THREE.Vector2(2, 2),
-
-            aoMap: gtAO,
+            aoMap: groundTextureAo,
             aoMapIntensity: 10,
-
             side: THREE.FrontSide,
             shadowSide: THREE.FrontSide,
         });
@@ -309,7 +294,9 @@ export class MainScene extends Framework.BaseScene {
                 
                 ( tree: GLTF ) => {
                     
-                    tree.scene.scale.set(5, 5, 5);
+                    const add = Math.random();
+                    // const add = 0;
+                    tree.scene.scale.set(5 + add, 5 + add, 5 + add);
                     tree.scene.rotation.y = Math.random() * Math.PI;
                     tree.scene.position.set(
                         Math.random() * 40 - 20,
@@ -601,19 +588,8 @@ export class MainScene extends Framework.BaseScene {
         //
 
         this.cameraMatUpdateCallback = ThreeApplication.createPerspectiveCameraResizer(this.renderer, this.camera);
-    }
-
-    public onInitialization = (params: Framework.InitializeParameters) => {
 
         this.clock = new THREE.Clock();
-
-        // POSTPROCESSING
-
-
-
-        //
-
-        this.managerKey = params.key;
 
         window.addEventListener("resize", this.cameraMatUpdateCallback);
 
@@ -674,6 +650,7 @@ export class MainScene extends Framework.BaseScene {
         if (KeyHandler.isKeyPressed("l") && this.timeElapsedFlashlight >= 1) {
             this.flashlight.visible = !this.flashlight.visible;
             this.timeElapsedFlashlight = 0;
+        }
           
         if (KeyHandler.isKeyPressed("Escape")) {
             this.sceneManager.push(new MainMenuScene({
@@ -731,8 +708,7 @@ export class MainScene extends Framework.BaseScene {
 
         this.grassShader.uniforms.time.value = this.clock.getElapsedTime() / 2;
         this.grassShader.uniformsNeedUpdate = true;
-        
-
+    
     };
 
     public onRender = (params: Framework.RenderParameters) => {
@@ -740,8 +716,5 @@ export class MainScene extends Framework.BaseScene {
         this.renderer.render(this, this.camera);
 
     };
-    
 
 }
-
-
