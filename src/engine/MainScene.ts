@@ -4,11 +4,8 @@ import * as Framework from "./framework/BaseScene";
 import { ThreeApplication } from "./ThreeApplication";
 
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 
 import { KeyHandler } from "./framework/KeyHandler";
-
-import { Object3D } from "three";
 
 import { MainMenuScene } from "./MainMenuScene";
 
@@ -30,8 +27,6 @@ export class MainScene extends Framework.BaseScene {
     private readonly ambientLight: THREE.AmbientLight;
     private readonly hemisphereLight: THREE.HemisphereLight;
     private readonly mainLight: THREE.DirectionalLight;
-    private readonly foleyLights: THREE.Group;
-    private readonly lampGroup: THREE.Group;
 
     private readonly atmosphere: THREE.Mesh;
     private readonly audioListener: THREE.AudioListener;
@@ -55,10 +50,6 @@ export class MainScene extends Framework.BaseScene {
 
     private readonly player: THREE.Object3D;
     private animationMixer: THREE.AnimationMixer;
-    private animationClip: THREE.AnimationClip;
-    private readonly animationActions: THREE.AnimationAction[] = [];
-    private readonly activeAction: THREE.AnimationAction;
-    private readonly lastAction: THREE.AnimationAction;
 
     private readonly cameraMatUpdateCallback: (e: UIEvent) => void;
 
@@ -101,46 +92,49 @@ export class MainScene extends Framework.BaseScene {
         this.mainLight.shadow.camera.left = this.mainLight.shadow.camera.bottom = -1000;
         this.mainLight.shadow.camera.top = this.mainLight.shadow.camera.right = 1000;
         this.mainLight.shadow.mapSize.width = this.mainLight.shadow.mapSize.height = 2048;
-        
-        this.foleyLights = new THREE.Group();
-        this.lampGroup = new THREE.Group();
 
         const startLight = new THREE.SpotLight("rgb(120, 120, 82)", 10, 6, Math.PI, 4, 1.1);
         startLight.position.set(0, 2, 230);
         startLight.target.position.set(0, 0, 0);
         startLight.castShadow = true;
-        this.foleyLights.add(startLight);
+        this.add(startLight);
+
+        const lamp = new THREE.Object3D();
+        
+        this.GLTFLoader.load(
+                
+            "/resources/objects/lamp/lamp-1.glb",
+            
+            ( lampGLTF: GLTF ) => {
+                
+                lampGLTF.scene.scale.setScalar(3);
+                lampGLTF.scene.rotation.y = Math.PI / 2;
+
+                lampGLTF.scene.castShadow = true;
+                lampGLTF.scene.receiveShadow = true;
+
+                lamp.add(lampGLTF.scene);
+            },
+        
+            ( event: ProgressEvent ) => { console.log((event.loaded / event.total) * 100 + "% loaded"); },
+            
+            ( event: ErrorEvent ) => { console.log(event); }
+        
+        );
 
         for(let i = 200; i > -250; i -= 50) {
 
-            const foleyLightSmall = new THREE.SpotLight("rgb(31, 56, 82)", 20, 10, Math.PI, 4, 1.25);
-            foleyLightSmall.position.set(0, 2, i);
-            foleyLightSmall.target.position.set(0, 0, 0);
-            foleyLightSmall.castShadow = true;
-            this.foleyLights.add(foleyLightSmall);
-
-            this.GLTFLoader.load(
-                
-                "/resources/objects/lamp/lamp-1.glb",
-                
-                ( lamp: GLTF ) => {
-                    
-                    lamp.scene.scale.setScalar(3);
-                    lamp.scene.rotation.y = Math.PI / 2;
-                    lamp.scene.position.set(-4, 0, i);
-
-                    lamp.scene.castShadow = true;
-                    lamp.scene.receiveShadow = true;
-
-                    this.lampGroup.add(lamp.scene);
-
-                },
+            const foleyLight = new THREE.SpotLight("rgb(31, 56, 82)", 20, 10, Math.PI, 4, 1.25);
+            foleyLight.target.position.set(0, 0, 0);
+            foleyLight.castShadow = true;
+            foleyLight.position.set(0, 2, i);
             
-                ( event: ProgressEvent ) => { console.log((event.loaded / event.total) * 100 + "% loaded"); },
-                
-                ( event: ErrorEvent ) => { console.log(event); }
-            
-            );
+            const lampTMP = lamp.clone();
+            lampTMP.position.set(-2, 0, i);
+            console.log(lampTMP);
+
+            this.add(foleyLight);
+            this.add(lampTMP);
 
         }
 
@@ -629,8 +623,6 @@ export class MainScene extends Framework.BaseScene {
         this.add(this.ambientLight);
         this.add(this.hemisphereLight);
         this.add(this.mainLight);
-        this.add(this.foleyLights);
-        this.add(this.lampGroup);
 
         this.add(this.atmosphere);
         this.add(this.rain);
