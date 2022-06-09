@@ -65,23 +65,26 @@ export class ThreeApplication extends Framework.BaseApplication {
         this.renderer.toneMappingExposure = 0.1;
         this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
 
-        this.sceneManager.set("main-scene", new MainScene({
-            renderer:     this.renderer,
-            sceneManager: this.sceneManager,
-        }));
-
-        this.sceneManager.set("main-menu-scene", new MainMenuScene({
-            renderer:     this.renderer,
-            sceneManager: this.sceneManager,
-        }));
-
     }
 
     public onInitialization = () => {
 
-        this.sceneManager.setCurrent("main-scene");
-        // this.sceneManager.setCurrent("main-menu-scene");
+        this.sceneManager.push(new MainScene({
+            renderer:     this.renderer,
+            sceneManager: this.sceneManager,
+            isOverlay:    false,
+        }));
 
+        // this.sceneManager.push<MainScene>({
+            // renderer:     this.renderer,
+            // sceneManager: this.sceneManager,
+        // });
+
+        // this.sceneManager.push<MainMenuScene>({
+            // renderer:     this.renderer,
+            // sceneManager: this.sceneManager,
+        // });
+      
     };
 
 }

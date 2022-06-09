@@ -7,7 +7,10 @@ import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 
 import { KeyHandler } from "./framework/KeyHandler";
+
 import { Object3D } from "three";
+
+import { MainMenuScene } from "./MainMenuScene";
 
 export class MainScene extends Framework.BaseScene {
 
@@ -611,6 +614,7 @@ export class MainScene extends Framework.BaseScene {
         //
 
         this.managerKey = params.key;
+
         window.addEventListener("resize", this.cameraMatUpdateCallback);
 
         this.add(this.player);
@@ -638,7 +642,7 @@ export class MainScene extends Framework.BaseScene {
         this.timeElapsedFlashlight = 0;
         this.flashlight.visible = false;
 
-    };
+    }
 
     public onDestruction = () => {
 
@@ -667,11 +671,15 @@ export class MainScene extends Framework.BaseScene {
         if (KeyHandler.isKeyPressed("ArrowRight"))  this.camera.rotation.y -= distance * 0.1;
         if (KeyHandler.isKeyPressed("ArrowLeft"))   this.camera.rotation.y += distance * 0.1;
 
-        if (KeyHandler.isKeyPressed("Escape"))      this.sceneManager.setCurrent("main-menu-scene");
-
         if (KeyHandler.isKeyPressed("l") && this.timeElapsedFlashlight >= 1) {
             this.flashlight.visible = !this.flashlight.visible;
             this.timeElapsedFlashlight = 0;
+          
+        if (KeyHandler.isKeyPressed("Escape")) {
+            this.sceneManager.push(new MainMenuScene({
+                renderer:     this.renderer,
+                sceneManager: this.sceneManager,
+            }));
         }
         this.timeElapsedFlashlight += params.deltaTime * 4;
         

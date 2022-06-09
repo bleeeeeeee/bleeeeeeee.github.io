@@ -1,64 +1,126 @@
-import { BaseScene } from "./BaseScene";
+// import { BaseScene } from "./BaseScene";
 
-/**
- * Just ugly. Refactor so I won't vomit next time.
- */
+// /**
+//  * Just ugly. Refactor so I won't vomit next time.
+//  */
+// export class SceneManager {
+
+//     private readonly scenes: Map<string, BaseScene>;
+//     private current?: BaseScene;
+
+//     public constructor() {
+
+//         this.scenes = new Map();
+//         this.current = undefined;
+
+//     }
+
+//     public has = (key: string) => this.scenes.has(key);
+//     public get = (key: string) => this.scenes.get(key);
+//     public set = (key: string, value: BaseScene) => this.scenes.set(key, value);
+
+//     public delete = (key: string) => {
+
+//         if (this.scenes.get(key) === this.current) {
+
+//             this.current = undefined;
+
+//         }
+
+//         this.scenes.get(key)?.onDestruction();
+//         this.scenes.delete(key);
+
+//     };
+
+//     public size = () => this.scenes.size;
+
+//     public getCurrent = () => this.current;
+
+//     public setCurrent = (key: string): boolean => {
+
+//         const currentScene = this.current;
+
+//         if (!this.scenes.has(key)) {
+
+//             return false;
+
+//         }
+
+//         currentScene?.onDestruction();
+//         currentScene?.removeAll();
+
+//         this.current = this.scenes.get(key);
+//         this.current?.onInitialization({ key });
+
+//         if (this.current === undefined) {
+
+//             console.error("Something's wrong ups!");
+
+//         }
+
+//         return true;
+
+//     };
+
+// }
+
+import { BaseScene, BaseSceneParameters } from "./BaseScene";
+
 export class SceneManager {
 
-    private readonly scenes: Map<string, BaseScene>;
-    private current?: BaseScene;
+    private readonly scenes: BaseScene[] = [];
 
     public constructor() {
-
-        this.scenes = new Map();
-        this.current = undefined;
-
     }
 
-    public has = (key: string) => this.scenes.has(key);
-    public get = (key: string) => this.scenes.get(key);
-    public set = (key: string, value: BaseScene) => this.scenes.set(key, value);
+    // public push = <SceneType extends BaseScene>(params: BaseSceneParameters): T => {
 
-    public delete = (key: string) => {
+        // const scene = new SceneType(params);
 
-        if (this.scenes.get(key) === this.current) {
+        // this.scenes.push(scene);
+        
+        // return scene;
 
-            this.current = undefined;
+    // };
 
-        }
+    public push = <SceneType extends BaseScene>(scene: SceneType): SceneType => {
 
-        this.scenes.get(key)?.onDestruction();
-        this.scenes.delete(key);
+        this.scenes.push(scene);
+        return scene;
 
     };
 
-    public size = () => this.scenes.size;
+    public pop = (): BaseScene | undefined => {
 
-    public getCurrent = () => this.current;
+        const scene = this.scenes.pop();
 
-    public setCurrent = (key: string): boolean => {
+        scene?.onDestruction();
+        scene?.removeAll();
 
-        const currentScene = this.current;
+        return scene;
 
-        if (!this.scenes.has(key)) {
+    };
 
-            return false;
+    public top = (): BaseScene | undefined => {
+
+        return this.scenes.length
+            ? this.scenes[this.scenes.length - 1]
+            : undefined;
+
+    };
+
+    public getUpdatables = (): BaseScene[] => {
+
+        const updatables: BaseScene[] = [];
+
+        for (let i = this.scenes.length - 1; i >= 0; i--) {
+
+            if (this.scenes[i].isOverlay) continue;
+            updatables.push(this.scenes[i]);
 
         }
 
-        currentScene?.onDestruction();
-        currentScene?.removeAll();
-
-        this.current = this.scenes.get(key);
-        this.current?.onInitialization({ key });
-
-        if (this.current === undefined) {
-
-            console.error("Something's wrong ups!");
-
-        }
-
-        return true;
+        return updatables;
 
     };
 
