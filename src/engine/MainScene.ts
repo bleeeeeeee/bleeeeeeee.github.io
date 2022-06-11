@@ -1,14 +1,12 @@
 import * as THREE from "three";
 import * as Framework from "./framework/BaseScene";
+import * as SkeletonUtils from "three/examples/jsm/utils/SkeletonUtils";
 
 import { ThreeApplication } from "./ThreeApplication";
 
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 
 import { KeyHandler } from "./framework/KeyHandler";
-
-import { Object3D } from "three";
 
 import { MainMenuScene } from "./MainMenuScene";
 
@@ -34,6 +32,7 @@ export class MainScene extends Framework.BaseScene {
     private readonly hemisphereLight: THREE.HemisphereLight;
     private readonly mainLight: THREE.DirectionalLight;
     private readonly foleyLights: THREE.Group;
+    private readonly lamp: THREE.Object3D;
     private readonly lampGroup: THREE.Group;
 
     
@@ -123,6 +122,35 @@ export class MainScene extends Framework.BaseScene {
         startLight.castShadow = true;
         this.foleyLights.add(startLight);
 
+        this.lamp = new THREE.Object3D();
+
+        this.GLTFLoader.load(
+                
+            "/resources/objects/lamp/lamp-1.glb",
+            
+            ( lampGLTF: GLTF ) => {
+                
+                lampGLTF.scene.scale.setScalar(3);
+                lampGLTF.scene.rotation.y = Math.PI / 2;
+                lampGLTF.scene.position.set(0, 0, 0);
+
+                lampGLTF.scene.castShadow = true;
+                lampGLTF.scene.receiveShadow = true;
+
+                this.lamp.add(lampGLTF.scene);
+
+            },
+        
+            ( event: ProgressEvent ) => { console.log((event.loaded / event.total) * 100 + "% loaded"); },
+            
+            ( event: ErrorEvent ) => { console.log(event); }
+        
+        );
+
+        const lamp = SkeletonUtils.SkeletonUtils.clone(this.lamp);
+        lamp.position.set(0, 0, 200);
+        this.add(lamp);
+
         for(let i = 200; i > -250; i -= 50) {
 
             const foleyLightSmall = new THREE.SpotLight("rgb(31, 56, 82)", 20, 10, Math.PI, 4, 1.25);
@@ -130,29 +158,6 @@ export class MainScene extends Framework.BaseScene {
             foleyLightSmall.target.position.set(0, 0, 0);
             foleyLightSmall.castShadow = true;
             this.foleyLights.add(foleyLightSmall);
-
-            this.GLTFLoader.load(
-                
-                "/resources/objects/lamp/lamp-1.glb",
-                
-                ( lamp: GLTF ) => {
-                    
-                    lamp.scene.scale.setScalar(3);
-                    lamp.scene.rotation.y = Math.PI / 2;
-                    lamp.scene.position.set(-4, 0, i);
-
-                    lamp.scene.castShadow = true;
-                    lamp.scene.receiveShadow = true;
-
-                    this.lampGroup.add(lamp.scene);
-
-                },
-            
-                ( event: ProgressEvent ) => { console.log((event.loaded / event.total) * 100 + "% loaded"); },
-                
-                ( event: ErrorEvent ) => { console.log(event); }
-            
-            );
 
         }
 
