@@ -5,6 +5,10 @@ import { KeyHandler } from "./framework/KeyHandler";
 
 export class Player extends THREE.Object3D {
 
+    public static readonly HEALTH: number;
+    public static readonly HUNGER: number;
+    public static readonly SCORE:  number;
+
     private readonly GLTFLoader: GLTFLoader = new GLTFLoader();
 
     private animationMixer: THREE.AnimationMixer;
@@ -46,13 +50,13 @@ export class Player extends THREE.Object3D {
         this.flashlight.target.position.set(0, 0, -500);
 
         this.add(camera, this.flashlight);
-
+        _mainScene.add(this.flashlight.target);
         this.flashlight.visible = false;
     }
     
     public update = (time: number) => {
 
-        const SPEED = 10;
+        const SPEED = 5;
         const distance = SPEED * time;
 
         if (KeyHandler.isKeyPressed("w")) {

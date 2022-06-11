@@ -3,11 +3,11 @@ import * as Framework from "./framework/BaseScene";
 
 import { ThreeApplication } from "./ThreeApplication";
 
-import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-
 import { KeyHandler } from "./framework/KeyHandler";
 
 import { MainMenuScene } from "./MainMenuScene";
+
+import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 
 import { Grass } from "./environment/Grass";
 import { Rocks } from "./environment/Rocks";
@@ -41,6 +41,9 @@ export class MainScene extends Framework.BaseScene {
     private readonly lamps: PhysicalLamps;
 
     private readonly player: Player;
+
+    private readonly OBJLoader: OBJLoader = new OBJLoader();
+    private readonly starGroup: THREE.Group;
 
     private readonly cameraMatUpdateCallback: (e: UIEvent) => void;
 
@@ -86,7 +89,7 @@ export class MainScene extends Framework.BaseScene {
 
         // WEATHER //
 
-        this.thunderstorm = new Thunderstorm(this.camera, this.rainCount);
+        this.thunderstorm = new Thunderstorm(this.camera, this.rainCount, this.player);
         this.add(this.thunderstorm);
 
         this.fog = new THREE.Fog("rgb(50, 58, 66)", 1.0, 50.0);
@@ -112,6 +115,42 @@ export class MainScene extends Framework.BaseScene {
 
         this.lamps = new PhysicalLamps();
         this.add(this.lamps);
+
+        // STARS //
+
+        const _star = new THREE.Object3D();
+
+        this.OBJLoader.load(
+
+            "/resources/objects/_stars/star.obj",
+
+            ( star: THREE.Group ) => {
+                    
+                star.position.set(0, 0.75, 200);
+                star.scale.setScalar(0.2);
+                _star.add(star);
+
+                const _starBoundingBox = new THREE.Box3().setFromObject(_star);
+                const _starBoundingBoxHelper = new THREE.Box3Helper(_starBoundingBox, 0xffff00);
+                
+                _star.add(_starBoundingBoxHelper);
+            },
+        
+            ( event: ProgressEvent ) => { console.log((event.loaded / event.total) * 100 + "% loaded"); },
+            ( event: ErrorEvent ) => { console.log(event); }
+        );
+
+        for(let i = 230; i > -250; i -= 20) {
+
+            const _starClone = _star.clone();
+            _starClone.position.z = i;
+            
+            this.add(_star.clone());
+        }
+        
+        // HUNGER //
+
+
 
         this.cameraMatUpdateCallback = ThreeApplication.createPerspectiveCameraResizer(this.renderer, this.camera);
 
@@ -145,6 +184,13 @@ export class MainScene extends Framework.BaseScene {
         // GROUND AND FOLEY //
 
         this.grass.update(params.sceneTime);
+
+        // STARS //
+
+
+        
+        // HUNGER //
+
     
     };
 
