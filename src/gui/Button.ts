@@ -50,7 +50,7 @@ export class Button extends THREE.Group {
         const fontLoader = new FontLoader();
         fontLoader.load(
             // "node_modules/three/examples/fonts/optimer_bold.typeface.json",
-            "resources/fonts/optimer_bold.typeface.json",
+            "/resources/fonts/optimer_bold.typeface.json",
             (font: Font) => {
 
                 const textGeometry = new TextGeometry(params.text as string, {
