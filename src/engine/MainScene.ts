@@ -9,12 +9,13 @@ import { KeyHandler } from "./framework/KeyHandler";
 
 import { MainMenuScene } from "./MainMenuScene";
 
-import { RainDroplets } from "./RainDroplets";
 import { Grass } from "./environment/Grass";
 import { Rocks } from "./environment/Rocks";
 import { Ground } from "./environment/Ground";
 import { Trees } from "./environment/Trees";
 import { PhysicalLamps } from "./environment/PhysicalLamps";
+
+import { Thunderstorm } from "./weather/Thunderstorm";
 
 export class MainScene extends Framework.BaseScene {
 
@@ -33,14 +34,8 @@ export class MainScene extends Framework.BaseScene {
     private readonly hemisphereLight: THREE.HemisphereLight;
     private readonly mainLight: THREE.DirectionalLight;
 
-    private readonly atmosphere: THREE.Mesh;
-    private readonly audioListener: THREE.AudioListener;
-    private readonly globalAudio: THREE.Audio;
-    private readonly thunderstruckAudioBump: THREE.Audio;
-    private readonly thunderstruckAudioDecay: THREE.Audio;
-    private readonly rain: RainDroplets;
     private readonly rainCount: number = 200000;
-    private readonly struckLight: THREE.PointLight;
+    private readonly thunderstorm: Thunderstorm;
 
     private readonly ground: Ground;
     private readonly trees: Trees;
@@ -67,6 +62,8 @@ export class MainScene extends Framework.BaseScene {
         this.flashlight.position.set(0, 1, -1);
         this.flashlight.target.position.set(0, 0, -500);
 
+        // LIGHTING //
+
         this.ambientLight = new THREE.AmbientLight("rgb(69, 76, 86)", 0.5);
         this.add(this.ambientLight);
 
@@ -86,55 +83,20 @@ export class MainScene extends Framework.BaseScene {
         this.mainLight.shadow.camera.far = 1000;
         this.mainLight.shadow.camera.left = this.mainLight.shadow.camera.bottom = -1000;
         this.mainLight.shadow.camera.top = this.mainLight.shadow.camera.right = 1000;
-        this.mainLight.shadow.mapSize.width = this.mainLight.shadow.mapSize.height = 2048;
+        this.mainLight.shadow.mapSize.width = this.mainLight.shadow.mapSize.height = 1024;
         this.add(this.mainLight);
 
-        this.audioListener = new THREE.AudioListener();
-        this.camera.add(this.audioListener);
+        // WEATHER //
 
-        this.globalAudio = new THREE.Audio(this.audioListener);
-
-        this.audioLoader.load(
-            "/resources/audio/rainfall.ogg", 
-            (audioBuffer: AudioBuffer) => {
-                this.globalAudio.setBuffer(audioBuffer);
-                this.globalAudio.setLoop(true);
-                this.globalAudio.setVolume(0.2);
-                this.globalAudio.play();
-            },
-            ( event: ProgressEvent ) => { console.log((event.loaded / event.total) * 100 + "% loaded"); },
-            ( event: ErrorEvent ) => { console.log(event); }
-        );
-
-        this.thunderstruckAudioBump = new THREE.Audio(this.audioListener);
-        this.thunderstruckAudioDecay = new THREE.Audio(this.audioListener);
-
-        this.struckLight = new THREE.PointLight("rgb(22, 22, 22)", 100, 500, 0.9);
-        this.struckLight.position.set(0, 200, 0);
-        this.add(this.struckLight);
-
-        const atmosphereColor = new THREE.Color("rgb(52, 93, 109)");
-        const atmosphereGeometry = new THREE.BoxGeometry(MainScene.WORLD_WIDTH, MainScene.WORLD_HEIGHT, MainScene.WORLD_DEPTH);
-        const atmosphereMaterial = new THREE.MeshBasicMaterial({
-            color: atmosphereColor,
-            side: THREE.DoubleSide,
-            opacity: 1,
-            transparent: true,
-        });
-
-        this.atmosphere = new THREE.Mesh(atmosphereGeometry, atmosphereMaterial);
-        this.add(this.atmosphere);
+        this.thunderstorm = new Thunderstorm(this.camera, this.rainCount);
+        this.add(this.thunderstorm);
 
         this.fog = new THREE.Fog("rgb(50, 58, 66)", 1.0, 50.0);
-
-        this.rain = new RainDroplets("rgb(52, 78, 96", this.rainCount);
-        this.add(this.rain);
 
         // GROUND AND FOLEY //
 
         const startLight = new THREE.SpotLight("rgb(120, 120, 82)", 10, 6, Math.PI, 4, 1.1);
         startLight.position.set(0, 2, 230);
-       //startLight.target.position.set(0, 0, 0);
         startLight.castShadow = true;
         this.add(startLight);
 
@@ -180,12 +142,10 @@ export class MainScene extends Framework.BaseScene {
             ( event: ErrorEvent ) => { console.log(event); }
         );
 
-        // starting position !!! //
         this.player.position.z = MainScene.WORLD_DEPTH / 2 - 15;
-        this.add(this.player);
-        this.player.add(this.camera);
-        this.player.add(this.flashlight);
-        this.add(this.flashlight.target);
+        
+        this.player.add(this.camera, this.flashlight);
+        this.add(this.player, this.flashlight.target);
 
         this.cameraMatUpdateCallback = ThreeApplication.createPerspectiveCameraResizer(this.renderer, this.camera);
 
@@ -203,6 +163,8 @@ export class MainScene extends Framework.BaseScene {
     };
 
     public onUpdate = (params: Framework.UpdateParameters) => {
+        
+        // PLAYER // must be changed !!! //
         
         const SPEED = 10;
         const distance = SPEED * params.deltaTime;
@@ -227,6 +189,8 @@ export class MainScene extends Framework.BaseScene {
             this.flashlight.visible = !this.flashlight.visible;
             this.timeElapsedFlashlight = 0;
         }
+
+        this.timeElapsedFlashlight += params.deltaTime * 4;
           
         if (KeyHandler.isKeyPressed("Escape")) {
             this.sceneManager.push(new MainMenuScene({
@@ -234,48 +198,12 @@ export class MainScene extends Framework.BaseScene {
                 sceneManager: this.sceneManager,
             }));
         }
-        this.timeElapsedFlashlight += params.deltaTime * 4;
         
-        // RAIN, STRUCKLIGHTS AND THUNDERSTRUCKS //
+        // WEATHER //
 
-        if(Math.random() > 0.98 || this.struckLight.power > 100) {
-
-            if(this.struckLight.power < 100) 
-                this.struckLight.position.set(Math.random() * 400, 300 + Math.random() * 200, 100);
-
-            this.struckLight.power = 50 + Math.random() * 800;
-
-            if(this.struckLight.power > 400) {
-                if(this.struckLight.power > 500) {
-                
-                    if(!this.thunderstruckAudioBump.isPlaying) {
-                        this.audioLoader.load("/resources/audio/thunder-struck-1.ogg", (audioBuffer: AudioBuffer) => {
-                            this.thunderstruckAudioBump.setBuffer(audioBuffer);
-                            this.thunderstruckAudioBump.setLoop(false);
-                            this.thunderstruckAudioBump.setVolume(0.2);
-                            this.thunderstruckAudioBump.play();
-                        });
-                    }
-    
-                }
-                else if(!this.thunderstruckAudioDecay.isPlaying) {
-                    this.audioLoader.load("/resources/audio/thunder-struck-2.ogg", (audioBuffer: AudioBuffer) => {
-                        this.thunderstruckAudioDecay.setBuffer(audioBuffer);
-                        this.thunderstruckAudioDecay.setLoop(false);
-                        this.thunderstruckAudioDecay.setVolume(0.4);
-                        this.thunderstruckAudioDecay.play();
-                    });
-                } 
-            }
-        }
+        this.thunderstorm.update(params.deltaTime);
         
-        this.rain.position.y -= 0.35;
-
-        if(this.rain.position.y < -Math.random() * 40) {
-            this.rain.position.y = Math.random() * 40;
-        }
-        
-        // GRASS MOVEMENT //
+        // GROUND AND FOLEY //
 
         this.grass.update(params.sceneTime);
     

@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { MainScene } from "./MainScene";
+import { MainScene } from "../MainScene";
 
 export class RainDroplets extends THREE.Points {
 

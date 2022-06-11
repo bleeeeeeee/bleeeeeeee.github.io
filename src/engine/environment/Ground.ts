@@ -1,8 +1,6 @@
 import * as THREE from "three";
 import { MainScene } from "../MainScene";
 
-import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-
 export class Ground extends THREE.Mesh {
 
     public constructor() {
