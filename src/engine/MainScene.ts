@@ -17,18 +17,15 @@ import { PhysicalLamps } from "./environment/PhysicalLamps";
 
 import { Thunderstorm } from "./weather/Thunderstorm";
 
+import { Player } from "./Player";
+
 export class MainScene extends Framework.BaseScene {
 
     public static readonly WORLD_HEIGHT: number = 100;
     public static readonly WORLD_WIDTH:  number = 250;
     public static readonly WORLD_DEPTH:  number = 500;
 
-    private readonly GLTFLoader: GLTFLoader = new GLTFLoader();
-    private readonly audioLoader: THREE.AudioLoader = new THREE.AudioLoader();
-
     private readonly camera: THREE.PerspectiveCamera;
-    private readonly flashlight: THREE.SpotLight;
-    private timeElapsedFlashlight: number;
 
     private readonly ambientLight: THREE.AmbientLight;
     private readonly hemisphereLight: THREE.HemisphereLight;
@@ -43,8 +40,7 @@ export class MainScene extends Framework.BaseScene {
     private readonly rocks: Rocks;
     private readonly lamps: PhysicalLamps;
 
-    private readonly player: THREE.Object3D;
-    private animationMixer: THREE.AnimationMixer;
+    private readonly player: Player;
 
     private readonly cameraMatUpdateCallback: (e: UIEvent) => void;
 
@@ -52,15 +48,17 @@ export class MainScene extends Framework.BaseScene {
 
         super(params);
 
+        // PLAYER (CAT) //
+
         this.camera = new THREE.PerspectiveCamera(50, (innerWidth / innerHeight), 0.1, 1000.0);
         this.camera.name = "main-camera";
         this.camera.position.y = 3.0;
         this.camera.position.z = 4.0;
         this.camera.lookAt(new THREE.Vector3(0, 0.5, -5));
 
-        this.flashlight = new THREE.SpotLight(0xffffff, 20, 20, Math.PI * 0.1, 0.2, 1);
-        this.flashlight.position.set(0, 1, -1);
-        this.flashlight.target.position.set(0, 0, -500);
+        this.player = new Player(this, this.camera);
+        this.player.position.z = MainScene.WORLD_DEPTH / 2 - 15;
+        this.add(this.player);
 
         // LIGHTING //
 
@@ -114,45 +112,10 @@ export class MainScene extends Framework.BaseScene {
 
         this.lamps = new PhysicalLamps();
         this.add(this.lamps);
-        
-        // PLAYER (CAT) //
-
-        const playerScale = 3.5;
-        this.player = new THREE.Object3D();
-
-        this.GLTFLoader.load(
-            "/resources/objects/better-cat/cat_rigged.glb", 
-            ( player: GLTF ) => {
-                player.scene.scale.setScalar(playerScale);
-                player.scene.rotation.y = Math.PI / 2;
-
-                this.player.castShadow = true;
-                this.player.receiveShadow = true;
-
-                this.animationMixer = new THREE.AnimationMixer(player.scene);
-
-                player.animations.forEach( ( clip ) => { this.animationMixer.clipAction( clip ).play(); });
-
-                this.animationMixer.timeScale = 1.5;
-
-                this.player.add(player.scene);
-
-            },
-            ( event: ProgressEvent ) => { console.log((event.loaded / event.total) * 100 + "% loaded"); },
-            ( event: ErrorEvent ) => { console.log(event); }
-        );
-
-        this.player.position.z = MainScene.WORLD_DEPTH / 2 - 15;
-        
-        this.player.add(this.camera, this.flashlight);
-        this.add(this.player, this.flashlight.target);
 
         this.cameraMatUpdateCallback = ThreeApplication.createPerspectiveCameraResizer(this.renderer, this.camera);
 
         window.addEventListener("resize", this.cameraMatUpdateCallback);
-
-        this.timeElapsedFlashlight = 0;
-        this.flashlight.visible = false;
 
     }
 
@@ -163,34 +126,6 @@ export class MainScene extends Framework.BaseScene {
     };
 
     public onUpdate = (params: Framework.UpdateParameters) => {
-        
-        // PLAYER // must be changed !!! //
-        
-        const SPEED = 10;
-        const distance = SPEED * params.deltaTime;
-
-        if (KeyHandler.isKeyPressed("w")) {
-            if(this.animationMixer) {
-                this.animationMixer.update(params.deltaTime);
-            }
-            this.player.position.z -= distance;
-        }
-
-        if (KeyHandler.isKeyPressed("s"))           this.player.position.z += distance;
-        if (KeyHandler.isKeyPressed("a"))           this.player.position.x -= distance;
-        if (KeyHandler.isKeyPressed("d"))           this.player.position.x += distance;
-
-        if (KeyHandler.isKeyPressed("ArrowUp"))     this.camera.rotation.x += distance * 0.5;
-        if (KeyHandler.isKeyPressed("ArrowDown"))   this.camera.rotation.x -= distance * 0.5;
-        if (KeyHandler.isKeyPressed("ArrowRight"))  this.camera.rotation.y -= distance * 0.5;
-        if (KeyHandler.isKeyPressed("ArrowLeft"))   this.camera.rotation.y += distance * 0.5;
-
-        if (KeyHandler.isKeyPressed("l") && this.timeElapsedFlashlight >= 1) {
-            this.flashlight.visible = !this.flashlight.visible;
-            this.timeElapsedFlashlight = 0;
-        }
-
-        this.timeElapsedFlashlight += params.deltaTime * 4;
           
         if (KeyHandler.isKeyPressed("Escape")) {
             this.sceneManager.push(new MainMenuScene({
@@ -198,7 +133,11 @@ export class MainScene extends Framework.BaseScene {
                 sceneManager: this.sceneManager,
             }));
         }
+
+        // PLAYER //
         
+        this.player.update(params.deltaTime);
+
         // WEATHER //
 
         this.thunderstorm.update(params.deltaTime);

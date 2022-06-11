@@ -8,7 +8,7 @@ import { RainDroplets } from "./RainDroplets";
 export class Thunderstorm extends THREE.Group {
 
     private readonly GLTFLoader: GLTFLoader = new GLTFLoader();
-    
+
     private readonly audioLoader: THREE.AudioLoader = new THREE.AudioLoader();
     private readonly audioListener: THREE.AudioListener = new THREE.AudioListener();
     
@@ -17,7 +17,7 @@ export class Thunderstorm extends THREE.Group {
     private readonly thunderstruckAudioBump: THREE.Audio = new THREE.Audio(this.audioListener);
     private readonly thunderstruckAudioDecay: THREE.Audio = new THREE.Audio(this.audioListener);
 
-    public constructor(camera: THREE.Camera, rainCount: number) {
+    public constructor(camera: THREE.PerspectiveCamera, rainCount: number) {
 
         super();
 
@@ -54,7 +54,6 @@ export class Thunderstorm extends THREE.Group {
         this.struckLight = new THREE.PointLight("rgb(22, 22, 22)", 100, 500, 0.9);
         this.struckLight.position.set(0, 200, 0);
         this.add(this.struckLight);
-
     }
 
     public update = (time: number) => {
@@ -72,7 +71,6 @@ export class Thunderstorm extends THREE.Group {
             this.struckLight.power = 50 + Math.random() * 800;
 
             if(this.struckLight.power > 500) {
-            
                 if(!this.thunderstruckAudioBump.isPlaying) {
                     this.audioLoader.load("/resources/audio/thunder-struck-1.ogg", (audioBuffer: AudioBuffer) => {
                         this.thunderstruckAudioBump.setBuffer(audioBuffer);
@@ -81,9 +79,7 @@ export class Thunderstorm extends THREE.Group {
                         this.thunderstruckAudioBump.play();
                     });
                 }
-            }
-            
-            else if(!this.thunderstruckAudioDecay.isPlaying) {
+            } else if(!this.thunderstruckAudioDecay.isPlaying) {
                 this.audioLoader.load("/resources/audio/thunder-struck-2.ogg", (audioBuffer: AudioBuffer) => {
                     this.thunderstruckAudioDecay.setBuffer(audioBuffer);
                     this.thunderstruckAudioDecay.setLoop(false);
