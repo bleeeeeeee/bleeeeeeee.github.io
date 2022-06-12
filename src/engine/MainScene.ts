@@ -301,7 +301,7 @@ export class MainScene extends Framework.BaseScene {
             }));
         }
 
-        if(this.player.position.z <= -MainScene.WORLD_DEPTH * 2 + 50)
+        if(this.player.position.z <= -MainScene.WORLD_DEPTH * 2 + 85)
             this.restart();
     };
 

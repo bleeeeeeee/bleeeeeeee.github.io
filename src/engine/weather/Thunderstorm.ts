@@ -114,7 +114,7 @@ export class Thunderstorm extends THREE.Group {
             if(this.struckLight.power < 100) 
                 this.struckLight.position.set(Math.random() * 400, 300 + Math.random() * 200, 100);
 
-            this.struckLight.power = 75 + Math.random() * 800;
+            this.struckLight.power = 50 + Math.random() * 800;
 
             if(!this.thunderstruckAudioDecay.isPlaying) {
                 this.audioLoader.load("/resources/audio/thunder-struck-1.ogg", (audioBuffer: AudioBuffer) => {

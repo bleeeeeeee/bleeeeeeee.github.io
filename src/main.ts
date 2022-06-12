@@ -14,15 +14,6 @@ const main = () => {
 
     (async () => {
         const gpuTier = await getGPUTier();
-      
-        // Example output:
-        // {
-        //   "tier": 1,
-        //   "isMobile": false,
-        //   "type": "BENCHMARK",
-        //   "fps": 21,
-        //   "gpu": "intel iris graphics 6100"
-        // }
 
         if (gpuTier.tier <= 2) {
 
@@ -30,11 +21,12 @@ const main = () => {
 
         } else {
 
-            console.log(gpuTier.tier, gpuTier.isMobile, gpuTier.type, gpuTier.fps, gpuTier.gpu);
             const application = new ThreeApplication(canvas);
     
             application.onInitialization();
             application.run();
+
+            console.log("tier ", gpuTier.tier, " isMobile ", gpuTier.isMobile, " testType ", gpuTier.type, " framerate ", gpuTier.fps, " name ", gpuTier.gpu);
 
         }
 
