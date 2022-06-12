@@ -50,8 +50,8 @@ export class ThreeApplication extends Framework.BaseApplication {
     public constructor(canvas?: HTMLCanvasElement) {
 
         super(canvas, { 
-            powerPreference: "high-performance",
-            antialias: false,
+            powerPreference: "low-power",
+            antialias: true,
             stencil: false,
             depth: true,
         });
@@ -62,7 +62,7 @@ export class ThreeApplication extends Framework.BaseApplication {
 
         this.renderer.outputEncoding = THREE.sRGBEncoding;
 
-        // this.renderer.toneMappingExposure = 0.1;
+        this.renderer.toneMappingExposure = 0.3;
         this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
 
     }

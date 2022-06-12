@@ -8,18 +8,19 @@ import { Button } from "../gui/Button";
 
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
-interface MainMenuSceneParameters extends Framework.BaseSceneParameters {
+import { MainScene } from "./MainScene";
+
+export interface EndMenuSceneParameters extends Framework.BaseSceneParameters {
 
     onRestart: () => void;
 
 }
 
-export class MainMenuScene extends Framework.BaseScene {
+export class EndMenuScene extends Framework.BaseScene {
 
     // private readonly camera: THREE.OrthographicCamera;
     private readonly camera: THREE.PerspectiveCamera;
 
-    private readonly playButton: Button;
     private readonly restartButton: Button;
     private readonly creditsButton: Button;
 
@@ -45,7 +46,7 @@ export class MainMenuScene extends Framework.BaseScene {
         
     }
 
-    public constructor(params: MainMenuSceneParameters) {
+    public constructor(params: EndMenuSceneParameters) {
 
         super(params);
 
@@ -57,16 +58,8 @@ export class MainMenuScene extends Framework.BaseScene {
         this.camera.position.z = 1;
         this.add(this.camera);
 
-        this.playButton = new Button({
-            position: new THREE.Vector3(0, .5, 0),
-            size: new THREE.Vector2(0.6, 0.4),
-            text: "PLAY",
-            fontSize: 2.5,
-            fontColor: "rgb(246, 246, 246)",
-        });
-
         this.restartButton = new Button({
-            position: new THREE.Vector3(0, 0, 0),
+            position: new THREE.Vector3(0, .4, 0),
             size: new THREE.Vector2(0.6, 0.4),
             text: "RESTART",
             fontSize: 2.5,
@@ -74,7 +67,7 @@ export class MainMenuScene extends Framework.BaseScene {
         });
 
         this.creditsButton = new Button({
-            position: new THREE.Vector3(0, -.5, 0),
+            position: new THREE.Vector3(0, -.4, 0),
             size: new THREE.Vector2(0.6, 0.4),
             text: "CREDITS",
             fontSize: 2.5,
@@ -103,7 +96,7 @@ export class MainMenuScene extends Framework.BaseScene {
 
         document.addEventListener("mousemove", this.onDocumentMouseMove.bind(this));
 
-        this.add(this.playButton, this.restartButton, this.creditsButton);
+        this.add(this.restartButton, this.creditsButton);
 
         this.onRestart = params.onRestart;
 
@@ -122,28 +115,21 @@ export class MainMenuScene extends Framework.BaseScene {
 
         this.raycaster.setFromCamera(this.mousePosition, this.camera);
 
-        const intersectsPlayButton    = this.raycaster.intersectObject(this.playButton);
         const intersectsRestartButton = this.raycaster.intersectObject(this.restartButton);
         const intersectsCreditsButton = this.raycaster.intersectObject(this.creditsButton);
 
         if (KeyHandler.isButtonPressed(0)) {
-      
-            if (intersectsPlayButton.length) {
-                this.sceneManager.pop();
-            }
 
             if (intersectsRestartButton.length) {
                 this.onRestart();
                 this.sceneManager.pop();
             }
 
-            if (intersectsCreditsButton.length) {
-                window.open(this.creditsButton.userData.URL, "_blank");
-                //this.sceneManager.pop();
-            }
-      
+            // if (intersectsCreditsButton.length) {
+                // window.open(this.creditsButton.userData.URL, "_blank");
+                // this.sceneManager.pop();
+            // }
         }
-
     };
 
     public onRender = (params: Framework.RenderParameters) => {

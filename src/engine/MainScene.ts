@@ -7,6 +7,7 @@ import { KeyHandler } from "./framework/KeyHandler";
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 import { MainMenuScene } from "./MainMenuScene";
+import { EndMenuScene } from "./EndMenuScene";
 
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
@@ -48,14 +49,38 @@ export class MainScene extends Framework.BaseScene {
     private readonly cans: THREE.Group[] = [];
 
     private readonly player: Player;
-    private readonly heart: THREE.Sprite = new THREE.Sprite();
-    private readonly can: THREE.Sprite = new THREE.Sprite();
+    public readonly heart: THREE.Sprite = new THREE.Sprite();
+    public readonly can:   THREE.Sprite = new THREE.Sprite();
 
     private readonly OBJLoader1: OBJLoader = new OBJLoader();
     private readonly OBJLoader2: OBJLoader = new OBJLoader();
-    private readonly MTLLoader: MTLLoader = new MTLLoader();
+    private readonly MTLLoader: MTLLoader  = new MTLLoader();
 
     private readonly cameraMatUpdateCallback: (e: UIEvent) => void;
+
+    public restart = () => {
+
+        this.player.position.z = MainScene.WORLD_DEPTH / 2 - 15;
+        this.player.position.x = 0;
+
+        this.stars.forEach((star: THREE.Group) => {
+
+            if (star.position.y == -10)
+                star.position.y = 0.75;
+
+        });
+
+        this.cans.forEach((can: THREE.Group) => {
+
+            if (can.position.y == -10)
+                can.position.y = 0.0;
+
+        });
+
+        this.heart.material.opacity = 1;
+        this.can.material.opacity = 1;
+
+    };
 
     public constructor(params: Framework.BaseSceneParameters) {
 
@@ -142,6 +167,7 @@ export class MainScene extends Framework.BaseScene {
 
                     this.add(star.scene);
                     star.scene.add(starLight.clone());
+                    this.stars.push(star.scene);
 
                 },
                 () => {},
@@ -167,6 +193,7 @@ export class MainScene extends Framework.BaseScene {
 
                     this.add(can.scene);
                     can.scene.add(canLight.clone());
+                    this.cans.push(can.scene);
 
                 },
 
@@ -214,6 +241,7 @@ export class MainScene extends Framework.BaseScene {
             this.sceneManager.push(new MainMenuScene({
                 renderer:     this.renderer,
                 sceneManager: this.sceneManager,
+                onRestart:    this.restart,
             }));
         }
 
@@ -231,37 +259,50 @@ export class MainScene extends Framework.BaseScene {
 
         // STARS AND HUNGER //
 
-        // Make them shake their ass
-        // this.stars.forEach((star: THREE.Group) => {
-            // star.position.y = 0.75 + Math.abs(Math.sin(params.totalTime / 10) / 10);
-        // });
-
         const playerBoundingBox = new THREE.Box3().setFromObject(this.player);
 
-        // this.stars.forEach((star: THREE.Group) => {
-        
-            // if (!playerBoundingBox.intersect(new THREE.Box3().setFromObject(star)).isEmpty()) {
-                // star.visible = false;
+        this.stars.forEach((star: THREE.Group) => {
+
+            if (star.position.y != -10)
+                star.position.y = 0.75 + Math.abs(Math.sin(params.totalTime / 1000) / 2);
+                
+            if (playerBoundingBox.intersectsBox(new THREE.Box3().setFromObject(star))) {
+                star.position.y = -10;
                 // this.stars.splice(this.stars.indexOf(star), 1);
-            // }
-
-        // });
-
-        for (let i = 0; i < this.stars.length; ++i) {
-
-            if (playerBoundingBox.intersectsBox(new THREE.Box3().setFromObject(this.stars[i]))) {
-                // this.stars[i].visible = false;
-                this.stars[i].position.y = -10;
-                this.stars.splice(i, 1);
-                break;
-                // console.log("Woah!!");
             }
 
-        }
-        this.heart.material.opacity -= 0.001;
-        this.can.material.opacity   -= 0.001;
+        });
 
-    
+        this.cans.forEach((can: THREE.Group) => {
+
+            if (can.position.y != -10)
+                can.position.y = 0.45 + Math.abs(Math.sin(params.totalTime / 1000) / 2);
+
+            if (playerBoundingBox.intersectsBox(new THREE.Box3().setFromObject(can))) {
+                can.position.y = -10;
+                // this.cans.splice(this.cans.indexOf(can), 1);
+                this.can.material.opacity = 1;
+                this.heart.material.opacity = 1;
+            }
+
+        });
+
+        if(this.can.material.opacity <= 0)
+            this.heart.material.opacity -= 0.005;
+
+        this.can.material.opacity   -= 0.007;
+
+
+        if(this.heart.material.opacity <= 0) {
+            this.sceneManager.push(new EndMenuScene({
+                renderer:     this.renderer,
+                sceneManager: this.sceneManager,
+                onRestart:    this.restart,
+            }));
+        }
+
+        if(this.player.position.z <= -MainScene.WORLD_DEPTH * 2 + 50)
+            this.restart();
     };
 
     public onRender = (params: Framework.RenderParameters) => {
