@@ -19,7 +19,7 @@
     },
     "overrides": [
         {
-            "files": ["*.ts", "*.tsx"]
+            "files": [ "*.ts" ]
         }
     ]
 }

@@ -1,3 +1,4 @@
+import * as THREE from "three";
 import * as Framework from "./framework/BaseApplication";
 
 import { MainScene } from "./MainScene";
@@ -22,7 +23,6 @@ export class ThreeApplication extends Framework.BaseApplication {
             camera.updateProjectionMatrix();
 
             renderer.setSize(innerWidth, innerHeight);
-
         };
 
     };
@@ -49,25 +49,42 @@ export class ThreeApplication extends Framework.BaseApplication {
 
     public constructor(canvas?: HTMLCanvasElement) {
 
-        super(canvas, { antialias: true, });
+        super(canvas, { 
+            powerPreference: "low-power",
+            antialias: true,
+            stencil: false,
+            depth: true,
+        });
 
-        this.sceneManager.set("main-scene", new MainScene({
-            renderer:     this.renderer,
-            sceneManager: this.sceneManager,
-        }));
+        this.renderer.shadowMap.enabled = true;
+        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        this.renderer.shadowMap.autoUpdate = true;
 
-        this.sceneManager.set("main-menu-scene", new MainMenuScene({
-            renderer:     this.renderer,
-            sceneManager: this.sceneManager,
-        }));
+        this.renderer.outputEncoding = THREE.sRGBEncoding;
+
+        this.renderer.toneMappingExposure = 0.3;
+        this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
 
     }
 
     public onInitialization = () => {
 
-        // this.sceneManager.setCurrent("main-scene");
-        this.sceneManager.setCurrent("main-menu-scene");
+        this.sceneManager.push(new MainScene({
+            renderer:     this.renderer,
+            sceneManager: this.sceneManager,
+            isOverlay:    false,
+        }));
 
+        // this.sceneManager.push<MainScene>({
+            // renderer:     this.renderer,
+            // sceneManager: this.sceneManager,
+        // });
+
+        // this.sceneManager.push<MainMenuScene>({
+            // renderer:     this.renderer,
+            // sceneManager: this.sceneManager,
+        // });
+      
     };
 
 }
