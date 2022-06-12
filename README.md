@@ -8,6 +8,6 @@
 
  Game where you can transform into a cat and runaway from a scary weather.
 
-Premis of the game is to live the longest during a thunderstorm. You can lose lifes when a thunder strickes you and regain it when you collect cans with cat food and stars on your way.
+Premise of the game is to live the longest during a thunderstorm. You can lose lives when a thunder strikes you and regain it when you collect cans with cat food and stars on your way.
 
 ![image](https://user-images.githubusercontent.com/72603100/173244668-ebcf648f-0c0d-4b3b-9114-61aab4d05747.png)
