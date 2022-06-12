@@ -4,6 +4,7 @@ import * as Framework from "./framework/BaseScene";
 import { ThreeApplication } from "./ThreeApplication";
 
 import { KeyHandler } from "./framework/KeyHandler";
+import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 import { MainMenuScene } from "./MainMenuScene";
 
@@ -26,6 +27,8 @@ export class MainScene extends Framework.BaseScene {
     public static readonly WORLD_WIDTH:  number = 250;
     public static readonly WORLD_DEPTH:  number = 500;
 
+    private readonly GLTFLoader: GLTFLoader = new GLTFLoader();
+
     private readonly camera: THREE.PerspectiveCamera;
 
     private readonly ambientLight: THREE.AmbientLight;
@@ -45,6 +48,8 @@ export class MainScene extends Framework.BaseScene {
     private readonly cans: THREE.Group[] = [];
 
     private readonly player: Player;
+    private readonly heart: THREE.Sprite = new THREE.Sprite();
+    private readonly can: THREE.Sprite = new THREE.Sprite();
 
     private readonly OBJLoader1: OBJLoader = new OBJLoader();
     private readonly OBJLoader2: OBJLoader = new OBJLoader();
@@ -124,85 +129,72 @@ export class MainScene extends Framework.BaseScene {
 
         const starLight = new THREE.SpotLight("rgb(120, 120, 82)", 30, 3, Math.PI, 2, 0.75);
 
-        this.MTLLoader.load(
-            "/resources/objects/_stars/star.mtl", 
-            (starMaterial: MTLLoader.MaterialCreator) => {
-
-				starMaterial.preload();
-				this.OBJLoader1.setMaterials(starMaterial);
-
-                this.OBJLoader1.load(
-                    "/resources/objects/_stars/star.obj",
-                    (star: THREE.Group) => {
+        for(let i = 215; i > -190; i -= 25) {
+            
+            this.GLTFLoader.load(
+                
+                "/resources/objects/_stars/star.glb", 
+                
+                (star: GLTF) => {
                     
-                        star.scale.setScalar(0.2);
-        
-                        for (let i = 215; i > -190; i -= 25) {
-                            const starClone = star.clone();
-                            starClone.position.set(randomElem([-2, 0, 2]), 0.75, i);
+                    star.scene.scale.setScalar(0.2);
+                    star.scene.position.set(randomElem([-2, 0, 2]), 0.75, i);
 
-                            this.add(starClone);
-                            starClone.add(starLight.clone());
-                        }
-        
-                    },
-                    () => {},
-                    (event: ErrorEvent) => console.error(event)
-                );
-            }
-        );
+                    this.add(star.scene);
+                    star.scene.add(starLight.clone());
+
+                },
+
+                () => {},
+
+                (event: ErrorEvent) => console.error(event)
+            );
+        }
 
         // HUNGER //
 
-        const canLight = new THREE.SpotLight("rgb(193, 40, 0)", 30, 4, Math.PI, 0.5, 0.5);
+        const canLight = new THREE.SpotLight("rgb(255, 128, 128)", 30, 3, Math.PI, 2, 0.75);
 
-        this.MTLLoader.load( 
-            "/resources/objects/_can/can.mtl", 
-            (canMaterial: MTLLoader.MaterialCreator) => {
+        let change = Math.random() * (35 - 25) + 25;
+        for(let i = 185; i > -210; i -= change, change = Math.random() * (35 - 25) + 25) {
+            
+            this.GLTFLoader.load(
+                
+                "/resources/objects/_can/can.glb", 
+                
+                (can: GLTF) => {
 
-				canMaterial.preload();
-				this.OBJLoader2.setMaterials( canMaterial ),
+                    can.scene.scale.setScalar(0.75);
+                    can.scene.position.set(randomElem([-2, 0, 2]), 0.6, i);
 
-                this.OBJLoader2.load(
-                    "/resources/objects/_can/can.obj",
-                    (can: THREE.Group) => {
-                    
-                        can.position.set(0, 0.8, 0);
-                        can.scale.setScalar(0.75);
-                        
-                        let change = Math.random() * (35 - 25) + 25;
-                        for(let i = 185; i > -210; i -= change, change = Math.random() * (35 - 25) + 25) {
-                            const canClone = can.clone();
-                            canClone.position.set(randomElem([-2, 0, 2]), 0, i);
+                    this.add(can.scene);
+                    can.scene.add(canLight.clone());
 
-                            this.add(canClone);
-                            canClone.add(canLight.clone());
-                        }
-        
-                    },
-                    () => {},
-                    (event: ErrorEvent) => console.error(event)
-                );
-            }
-        );
+                },
+
+                () => {},
+                
+                (event: ErrorEvent) => console.error(event)
+            );
+        }
 
         //
 
         const heartSprite   = new THREE.TextureLoader().load("/resources/sprites/heart.png");
         const heartMaterial = new THREE.SpriteMaterial({ map: heartSprite });
         
-        const heart = new THREE.Sprite(heartMaterial);
-        heart.position.set(-0.55, 1.55, 2);
-        heart.scale.setScalar(0.25);
-        this.player.add(heart);
+        this.heart = new THREE.Sprite(heartMaterial);
+        this.heart.position.set(-0.55, 1.55, 2);
+        this.heart.scale.setScalar(0.25);
+        this.player.add(this.heart);
 
         const canSprite   = new THREE.TextureLoader().load("/resources/sprites/can.png");
         const canMaterial = new THREE.SpriteMaterial({ map: canSprite });
         
-        const can = new THREE.Sprite(canMaterial);
-        can.position.set(0.55, 1.55, 2);
-        can.scale.setScalar(0.3);
-        this.player.add(can);
+        this.can = new THREE.Sprite(canMaterial);
+        this.can.position.set(0.55, 1.55, 2);
+        this.can.scale.setScalar(0.3);
+        this.player.add(this.can);
 
         //
         
@@ -240,6 +232,10 @@ export class MainScene extends Framework.BaseScene {
         this.grass.update(params.sceneTime);
 
         // STARS AND HUNGER //
+
+        this.heart.material.opacity -= 0.001;
+        this.can.material.opacity   -= 0.001;
+
     
     };
 
