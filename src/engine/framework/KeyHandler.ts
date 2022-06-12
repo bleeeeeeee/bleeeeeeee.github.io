@@ -21,6 +21,12 @@ export class KeyHandler {
     private static readonly keys: { [key: string]: boolean } = {};
     private static readonly buttons: { [button: number]: boolean } = {};
 
+    // private static readonly keys: { [key: string]: {
+        // isPressed: boolean,
+        // isDown:    boolean,
+        // isUp:      boolean
+    // } } = {};
+
     private static initialized = false;
 
     private static onKeyDown    = (event: KeyboardEvent) => KeyHandler.keys[event.key]       = true;

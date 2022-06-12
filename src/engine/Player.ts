@@ -15,6 +15,28 @@ export class Player extends THREE.Object3D {
     private readonly flashlight: THREE.SpotLight;
     private timeElapsedFlashlight = 0;
 
+    private onKeyDown = (event: KeyboardEvent) => {
+
+        switch (event.key) {
+
+            case "d": {
+
+                if (this.position.x < 2)
+                    this.position.x += 2;
+
+            } break;
+
+            case "a": {
+
+                if (this.position.x > -2)
+                    this.position.x -= 2;
+
+            } break;
+
+        }
+
+    };
+
     public constructor(_mainScene: THREE.Scene, camera: THREE.PerspectiveCamera) {
 
         super();
@@ -54,6 +76,9 @@ export class Player extends THREE.Object3D {
         this.add(camera, this.flashlight);
         _mainScene.add(this.flashlight.target);
         this.flashlight.visible = false;
+
+        document.addEventListener("keydown", this.onKeyDown);
+
     }
     
     public update = (time: number) => {
@@ -65,12 +90,12 @@ export class Player extends THREE.Object3D {
             if(this.animationMixer) {
                 this.animationMixer.update(time);
             }
-            this.position.x = 0;
+            // this.position.x = 0;
             this.position.z -= distance;
         }
 
-        if (KeyHandler.isKeyPressed("a")) this.position.x = -2;
-        if (KeyHandler.isKeyPressed("d")) this.position.x = 2;
+        // if (KeyHandler.isKeyPressed("a")) this.position.x = -2;
+        // if (KeyHandler.isKeyPressed("d")) this.position.x = 2;
 
         if (KeyHandler.isKeyPressed("l") && this.timeElapsedFlashlight >= 1) {
             this.flashlight.visible = !this.flashlight.visible;
@@ -81,4 +106,5 @@ export class Player extends THREE.Object3D {
         this.timeElapsedFlashlight += time * 4;
 
     };
+
 }

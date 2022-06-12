@@ -56,8 +56,6 @@ export class MainScene extends Framework.BaseScene {
 
         super(params);
 
-        // PLAYER (CAT) //
-
         this.camera = new THREE.PerspectiveCamera(50, (innerWidth / innerHeight), 0.1, 1000.0);
         this.camera.name = "main-camera";
         this.camera.position.y = 3.0;
@@ -67,8 +65,6 @@ export class MainScene extends Framework.BaseScene {
         this.player = new Player(this, this.camera);
         this.player.position.z = MainScene.WORLD_DEPTH / 2 - 15;
         this.add(this.player);
-
-        // LIGHTING //
 
         this.ambientLight = new THREE.AmbientLight("rgb(69, 76, 86)", 0.5);
         this.add(this.ambientLight);
@@ -142,7 +138,6 @@ export class MainScene extends Framework.BaseScene {
                         star.scale.setScalar(0.2);
         
                         for (let i = 215; i > -190; i -= 25) {
-
                             const starClone = star.clone();
                             starClone.position.set(randomElem([-2, 0, 2]), 0.75, i);
 
@@ -151,7 +146,6 @@ export class MainScene extends Framework.BaseScene {
                         }
         
                     },
-                
                     () => {},
                     (event: ErrorEvent) => console.error(event)
                 );
@@ -163,73 +157,52 @@ export class MainScene extends Framework.BaseScene {
         const canLight = new THREE.SpotLight("rgb(193, 40, 0)", 30, 4, Math.PI, 0.5, 0.5);
 
         this.MTLLoader.load( 
-
             "/resources/objects/_can/can.mtl", 
-            
-            ( canMaterial: MTLLoader.MaterialCreator ) => {
+            (canMaterial: MTLLoader.MaterialCreator) => {
 
 				canMaterial.preload();
-
 				this.OBJLoader2.setMaterials( canMaterial ),
 
                 this.OBJLoader2.load(
-                
                     "/resources/objects/_can/can.obj",
-
-                    ( can: THREE.Group ) => {
+                    (can: THREE.Group) => {
                     
                         can.position.set(0, 0.8, 0);
                         can.scale.setScalar(0.75);
                         
                         let change = Math.random() * (35 - 25) + 25;
+                        for(let i = 185; i > -210; i -= change, change = Math.random() * (35 - 25) + 25) {
+                            const canClone = can.clone();
+                            canClone.position.set(randomElem([-2, 0, 2]), 0, i);
 
-                        for(let i = 185; i > -210; i -= change) {
-                            const Random100 = Math.random();
-                            const _canClone = can.clone();
-                            const _canLightClone = canLight.clone();
-
-                            _canClone.position.set(0, 0, i);
-                            _canLightClone.position.set(0, 3, i);
-
-                            if(Random100 < 0.33) {
-                                _canClone.position.x = _canLightClone.position.x = 2;
-                                this.add(_canClone, _canLightClone);
-                            } else if(Random100 > 0.67) {
-                                _canClone.position.x = _canLightClone.position.x = -2;
-                                this.add(_canClone, _canLightClone);
-                            } else {
-                                _canClone.position.x = _canLightClone.position.x = 0;
-                                this.add(_canClone, _canLightClone);
-                            }
-
-                            change = Math.random() * (35 - 25) + 25;
+                            this.add(canClone);
+                            canClone.add(canLight.clone());
                         }
         
                     },
-                
-                    ( event: ProgressEvent ) => { console.log((event.loaded / event.total) * 100 + "% loaded"); },
-                    ( event: ErrorEvent ) => { console.log(event); }
+                    () => {},
+                    (event: ErrorEvent) => console.error(event)
                 );
             }
         );
 
         //
 
-        const heartSprite   = new THREE.TextureLoader().load( "/resources/sprites/heart.png" );
-        const heartMaterial = new THREE.SpriteMaterial( { map: heartSprite } );
+        const heartSprite   = new THREE.TextureLoader().load("/resources/sprites/heart.png");
+        const heartMaterial = new THREE.SpriteMaterial({ map: heartSprite });
         
-        const heart = new THREE.Sprite( heartMaterial );
+        const heart = new THREE.Sprite(heartMaterial);
         heart.position.set(-0.55, 1.55, 2);
         heart.scale.setScalar(0.25);
-        this.player.add( heart );
+        this.player.add(heart);
 
-        const canSprite   = new THREE.TextureLoader().load( "/resources/sprites/can.png" );
-        const canMaterial = new THREE.SpriteMaterial( { map: canSprite } );
+        const canSprite   = new THREE.TextureLoader().load("/resources/sprites/can.png");
+        const canMaterial = new THREE.SpriteMaterial({ map: canSprite });
         
-        const can = new THREE.Sprite( canMaterial );
+        const can = new THREE.Sprite(canMaterial);
         can.position.set(0.55, 1.55, 2);
         can.scale.setScalar(0.3);
-        this.player.add( can );
+        this.player.add(can);
 
         //
         

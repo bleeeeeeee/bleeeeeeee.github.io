@@ -62,7 +62,7 @@ export class ThreeApplication extends Framework.BaseApplication {
 
         this.renderer.outputEncoding = THREE.sRGBEncoding;
 
-        this.renderer.toneMappingExposure = 0.1;
+        // this.renderer.toneMappingExposure = 0.1;
         this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
 
     }
