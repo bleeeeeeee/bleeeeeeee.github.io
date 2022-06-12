@@ -15,7 +15,7 @@ const main = () => {
     (async () => {
         const gpuTier = await getGPUTier();
 
-        if (gpuTier.tier <= 2) {
+        if (gpuTier.tier <= 1) {
 
             console.error("Your GPU is not supported! Buy better computer!");
 
