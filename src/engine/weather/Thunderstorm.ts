@@ -79,7 +79,7 @@ export class Thunderstorm extends THREE.Group {
         
         this.GLTFLoader.load(
                 
-            "/resources/objects/_lightning/model.glb", 
+            "/resources/objects/lightning/model.glb", 
             
             ( _lightning: GLTF ) => {
 

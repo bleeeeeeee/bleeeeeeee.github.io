@@ -5,7 +5,7 @@ export class Ground extends THREE.Mesh {
 
     public constructor() {
 
-        const gtDIFF   = new THREE.TextureLoader().load("/resources/textures/betterground/_COL_1K.png");
+        const gtDIFF   = new THREE.TextureLoader().load("/resources/textures/betterground/COL_1K.png");
         const gtNRM    = new THREE.TextureLoader().load("/resources/textures/betterground/NRM_1K.png");
         const gtAO     = new THREE.TextureLoader().load("/resources/textures/betterground/AO_1K.png");
 

@@ -158,7 +158,7 @@ export class MainScene extends Framework.BaseScene {
             
             this.GLTFLoader.load(
                 
-                "/resources/objects/_stars/star.glb", 
+                "/resources/objects/stars/star.glb", 
                 
                 (star: GLTF) => {
                     
@@ -184,7 +184,7 @@ export class MainScene extends Framework.BaseScene {
             
             this.GLTFLoader.load(
                 
-                "/resources/objects/_can/can.glb", 
+                "/resources/objects/can/can.glb", 
                 
                 (can: GLTF) => {
 
