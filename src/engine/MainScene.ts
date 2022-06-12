@@ -143,6 +143,7 @@ export class MainScene extends Framework.BaseScene {
 
                             this.add(starClone);
                             starClone.add(starLight.clone());
+                            this.stars.push(starClone);
                         }
         
                     },
@@ -177,6 +178,7 @@ export class MainScene extends Framework.BaseScene {
 
                             this.add(canClone);
                             canClone.add(canLight.clone());
+                            this.cans.push(canClone);
                         }
         
                     },
@@ -240,6 +242,34 @@ export class MainScene extends Framework.BaseScene {
         this.grass.update(params.sceneTime);
 
         // STARS AND HUNGER //
+
+        // Make them shake their ass
+        // this.stars.forEach((star: THREE.Group) => {
+            // star.position.y = 0.75 + Math.abs(Math.sin(params.totalTime / 10) / 10);
+        // });
+
+        const playerBoundingBox = new THREE.Box3().setFromObject(this.player);
+
+        // this.stars.forEach((star: THREE.Group) => {
+        
+            // if (!playerBoundingBox.intersect(new THREE.Box3().setFromObject(star)).isEmpty()) {
+                // star.visible = false;
+                // this.stars.splice(this.stars.indexOf(star), 1);
+            // }
+
+        // });
+
+        for (let i = 0; i < this.stars.length; ++i) {
+
+            if (playerBoundingBox.intersectsBox(new THREE.Box3().setFromObject(this.stars[i]))) {
+                // this.stars[i].visible = false;
+                this.stars[i].position.y = -10;
+                this.stars.splice(i, 1);
+                break;
+                // console.log("Woah!!");
+            }
+
+        }
     
     };
 
