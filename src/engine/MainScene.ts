@@ -8,6 +8,7 @@ import { KeyHandler } from "./framework/KeyHandler";
 import { MainMenuScene } from "./MainMenuScene";
 
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
+import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
 
 import { Grass } from "./environment/Grass";
 import { Rocks } from "./environment/Rocks";
@@ -42,8 +43,9 @@ export class MainScene extends Framework.BaseScene {
 
     private readonly player: Player;
 
-    private readonly OBJLoader: OBJLoader = new OBJLoader();
-    private readonly starGroup: THREE.Group;
+    private readonly OBJLoader1: OBJLoader = new OBJLoader();
+    private readonly OBJLoader2: OBJLoader = new OBJLoader();
+    private readonly MTLLoader: MTLLoader = new MTLLoader();
 
     private readonly cameraMatUpdateCallback: (e: UIEvent) => void;
 
@@ -104,13 +106,13 @@ export class MainScene extends Framework.BaseScene {
         this.ground = new Ground();
         this.add(this.ground);
 
-        this.trees = new Trees(1000);
+        this.trees = new Trees(750);
         this.add(this.trees);
 
-        this.grass = new Grass(500000);
+        this.grass = new Grass(250000);
         this.add(this.grass);
 
-        this.rocks = new Rocks(150);
+        this.rocks = new Rocks(100);
         this.add(this.rocks);
 
         this.lamps = new PhysicalLamps();
@@ -118,39 +120,111 @@ export class MainScene extends Framework.BaseScene {
 
         // STARS //
 
-        const _star = new THREE.Object3D();
+        const starLight = new THREE.SpotLight("rgb(120, 120, 82)", 30, 3, Math.PI, 2, 0.75);
 
-        this.OBJLoader.load(
+        this.MTLLoader.load( 
 
-            "/resources/objects/_stars/star.obj",
+            "/resources/objects/_stars/star.mtl", 
+            
+            ( starMaterial: MTLLoader.MaterialCreator ) => {
 
-            ( star: THREE.Group ) => {
-                    
-                star.position.set(0, 0.75, 200);
-                star.scale.setScalar(0.2);
-                _star.add(star);
+				starMaterial.preload();
 
-                const _starBoundingBox = new THREE.Box3().setFromObject(_star);
-                const _starBoundingBoxHelper = new THREE.Box3Helper(_starBoundingBox, 0xffff00);
+				this.OBJLoader1.setMaterials( starMaterial ),
+
+                this.OBJLoader1.load(
                 
-                _star.add(_starBoundingBoxHelper);
-            },
+                    "/resources/objects/_stars/star.obj",
+
+                    ( star: THREE.Group ) => {
+                    
+                        star.position.set(0, 0.75, 0);
+                        star.scale.setScalar(0.2);
         
-            ( event: ProgressEvent ) => { console.log((event.loaded / event.total) * 100 + "% loaded"); },
-            ( event: ErrorEvent ) => { console.log(event); }
+                        for(let i = 215; i > -190; i -= 25) {
+                            const Random100 = Math.random();
+                            const _starClone = star.clone();
+                            const _starLightClone = starLight.clone();
+
+                            _starClone.position.set(0, 0.75, i);
+                            _starLightClone.position.set(0, 2, i);
+
+                            if(Random100 < 0.33) {
+                                _starClone.position.x = _starLightClone.position.x = 2;
+                                this.add(_starClone, _starLightClone);
+                            } else if(Random100 > 0.67) {
+                                _starClone.position.x = _starLightClone.position.x = -2;
+                                this.add(_starClone, _starLightClone);
+                            } else {
+                                _starClone.position.x = _starLightClone.position.x = 0;
+                                this.add(_starClone, _starLightClone);
+                            }
+                        }
+        
+                    },
+                
+                    ( event: ProgressEvent ) => { console.log((event.loaded / event.total) * 100 + "% loaded"); },
+                    ( event: ErrorEvent ) => { console.log(event); }
+                );
+            }
         );
 
-        for(let i = 230; i > -250; i -= 20) {
-
-            const _starClone = _star.clone();
-            _starClone.position.z = i;
-            
-            this.add(_star.clone());
-        }
-        
         // HUNGER //
 
+        const canLight = new THREE.SpotLight("rgb(193, 40, 0)", 30, 4, Math.PI, 0.5, 0.5);
 
+        this.MTLLoader.load( 
+
+            "/resources/objects/_can/can.mtl", 
+            
+            ( canMaterial: MTLLoader.MaterialCreator ) => {
+
+				canMaterial.preload();
+
+				this.OBJLoader2.setMaterials( canMaterial ),
+
+                this.OBJLoader2.load(
+                
+                    "/resources/objects/_can/can.obj",
+
+                    ( star: THREE.Group ) => {
+                    
+                        star.position.set(0, 0.8, 0);
+                        star.scale.setScalar(0.75);
+                        
+                        let change = Math.random() * (35 - 25) + 25;
+
+                        for(let i = 185; i > -210; i -= change) {
+                            const Random100 = Math.random();
+                            const _canClone = star.clone();
+                            const _canLightClone = canLight.clone();
+
+                            _canClone.position.set(0, 0, i);
+                            _canLightClone.position.set(0, 3, i);
+
+                            if(Random100 < 0.33) {
+                                _canClone.position.x = _canLightClone.position.x = 2;
+                                this.add(_canClone, _canLightClone);
+                            } else if(Random100 > 0.67) {
+                                _canClone.position.x = _canLightClone.position.x = -2;
+                                this.add(_canClone, _canLightClone);
+                            } else {
+                                _canClone.position.x = _canLightClone.position.x = 0;
+                                this.add(_canClone, _canLightClone);
+                            }
+
+                            change = Math.random() * (35 - 25) + 25;
+                        }
+        
+                    },
+                
+                    ( event: ProgressEvent ) => { console.log((event.loaded / event.total) * 100 + "% loaded"); },
+                    ( event: ErrorEvent ) => { console.log(event); }
+                );
+            }
+        );
+
+        //
 
         this.cameraMatUpdateCallback = ThreeApplication.createPerspectiveCameraResizer(this.renderer, this.camera);
 
@@ -185,12 +259,7 @@ export class MainScene extends Framework.BaseScene {
 
         this.grass.update(params.sceneTime);
 
-        // STARS //
-
-
-        
-        // HUNGER //
-
+        // STARS AND HUNGER //
     
     };
 

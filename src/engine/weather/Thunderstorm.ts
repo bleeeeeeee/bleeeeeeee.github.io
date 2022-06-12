@@ -13,12 +13,14 @@ export class Thunderstorm extends THREE.Group {
 
     private readonly audioLoader: THREE.AudioLoader = new THREE.AudioLoader();
     private readonly audioListener: THREE.AudioListener = new THREE.AudioListener();
+    private readonly audioListenerBump: THREE.AudioListener = new THREE.AudioListener();
+    private readonly audioListenerDecay: THREE.AudioListener = new THREE.AudioListener();
     
     private readonly rain: RainDroplets;
     private readonly struckLight: THREE.PointLight;
     private readonly struckLightDirect: THREE.PointLight;
-    private readonly thunderstruckAudioBump: THREE.Audio = new THREE.Audio(this.audioListener);
-    private readonly thunderstruckAudioDecay: THREE.Audio = new THREE.Audio(this.audioListener);
+    private readonly thunderstruckAudioBump: THREE.Audio = new THREE.Audio(this.audioListenerBump);
+    private readonly thunderstruckAudioDecay: THREE.Audio = new THREE.Audio(this.audioListenerDecay);
 
     private readonly _Player: Player;
     private readonly struckPhysical: THREE.Object3D;
@@ -44,7 +46,7 @@ export class Thunderstorm extends THREE.Group {
         this.rain = new RainDroplets("rgb(52, 78, 96", rainCount);
         this.add(this.rain);
 
-        camera.add(this.audioListener);
+        camera.add(this.audioListener, this.audioListenerBump, this.audioListenerDecay);
 
         const globalAudio = new THREE.Audio(this.audioListener);
         this.audioLoader.load(
@@ -73,6 +75,8 @@ export class Thunderstorm extends THREE.Group {
 
         this._Player = player;
 
+        // LIGHTNING MODEL //
+        
         this.GLTFLoader.load(
                 
             "/resources/objects/_lightning/model.glb", 
@@ -110,50 +114,49 @@ export class Thunderstorm extends THREE.Group {
             if(this.struckLight.power < 100) 
                 this.struckLight.position.set(Math.random() * 400, 300 + Math.random() * 200, 100);
 
-            this.struckLight.power = 50 + Math.random() * 800;
+            this.struckLight.power = 75 + Math.random() * 800;
 
-            if(this.struckLight.power > 500) {
+            if(!this.thunderstruckAudioDecay.isPlaying) {
+                this.audioLoader.load("/resources/audio/thunder-struck-1.ogg", (audioBuffer: AudioBuffer) => {
+                    this.thunderstruckAudioBump.setBuffer(audioBuffer);
+                    this.thunderstruckAudioBump.setLoop(false);
+                    this.thunderstruckAudioBump.setVolume(0.3);
+                    this.thunderstruckAudioBump.play();
+                });
+            }
 
-                if(!this.thunderstruckAudioBump.isPlaying) {
-                    this.audioLoader.load("/resources/audio/thunder-struck-1.ogg", (audioBuffer: AudioBuffer) => {
-                        this.thunderstruckAudioBump.setBuffer(audioBuffer);
-                        this.thunderstruckAudioBump.setLoop(false);
-                        this.thunderstruckAudioBump.setVolume(0.2);
-                        this.thunderstruckAudioBump.play();
-                    });
-                } else if(!this.thunderstruckAudioDecay.isPlaying) {
-                    this.audioLoader.load("/resources/audio/thunder-struck-2.ogg", (audioBuffer: AudioBuffer) => {
-                        this.thunderstruckAudioDecay.setBuffer(audioBuffer);
-                        this.thunderstruckAudioDecay.setLoop(false);
-                        this.thunderstruckAudioDecay.setVolume(0.4);
-                        this.thunderstruckAudioDecay.play();
-                    });
-                }
-            } 
+            if(!this.thunderstruckAudioBump.isPlaying) {
+                this.audioLoader.load("/resources/audio/thunder-struck-2.ogg", (audioBuffer: AudioBuffer) => {
+                    this.thunderstruckAudioDecay.setBuffer(audioBuffer);
+                    this.thunderstruckAudioDecay.setLoop(false);
+                    this.thunderstruckAudioDecay.setVolume(0.4);
+                    this.thunderstruckAudioDecay.play();
+                });
+            }
         }
         
-        if( this.probabilityCount > this.PROBABILITY) {
+        // if( this.probabilityCount > this.PROBABILITY) {
 
-            this.struckPhysical.position.set(this._Player.position.x, 0, this._Player.position.z - 1);
-            this.struckLightDirect.position.set(0, 200, this._Player.position.z - 5);
+        //     this.struckPhysical.position.set(this._Player.position.x, 0, this._Player.position.z - 1);
+        //     this.struckLightDirect.position.set(0, 200, this._Player.position.z - 5);
 
-            this.struckPhysical.visible     = true;
-            this.struckLightDirect.visible  = true;
-            this.probabilityCount           = 0;
+        //     this.struckPhysical.visible     = true;
+        //     this.struckLightDirect.visible  = true;
+        //     this.probabilityCount           = 0;
 
-        } else {
+        // } else {
 
-            this.struckPhysical.visible     = false;
-            this.struckLightDirect.visible  = false;
-        }
+        //     this.struckPhysical.visible     = false;
+        //     this.struckLightDirect.visible  = false;
+        // }
 
-        if(this._Player.position.z % 40 === 0) {
-            this.PROBABILITY -= 1;
-        }
+        // if(this._Player.position.z % 40 === 0) {
+        //     this.PROBABILITY -= 1;
+        // }
 
-        const add = Math.random() * (0.2 - 0.01) + (0.01);
-        this.probabilityCount += add;
-        console.log(add);
+        // const add = Math.random() * (0.2 - 0.01) + (0.01);
+        // this.probabilityCount += add;
+        // console.log(add);
 
     };
 }

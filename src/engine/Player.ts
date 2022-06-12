@@ -41,7 +41,9 @@ export class Player extends THREE.Object3D {
                 this.add(player.scene);
 
             },
+
             ( event: ProgressEvent ) => { console.log((event.loaded / event.total) * 100 + "% loaded"); },
+            
             ( event: ErrorEvent ) => { console.log(event); }
         );
 
@@ -56,7 +58,7 @@ export class Player extends THREE.Object3D {
     
     public update = (time: number) => {
 
-        const SPEED = 5;
+        const SPEED = 10;
         const distance = SPEED * time;
 
         if (KeyHandler.isKeyPressed("w")) {
