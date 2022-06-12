@@ -215,6 +215,24 @@ export class MainScene extends Framework.BaseScene {
 
         //
 
+        const heartSprite   = new THREE.TextureLoader().load( "/resources/sprites/heart.png" );
+        const heartMaterial = new THREE.SpriteMaterial( { map: heartSprite } );
+        
+        const heart = new THREE.Sprite( heartMaterial );
+        heart.position.set(-0.55, 1.55, 2);
+        heart.scale.setScalar(0.25);
+        this.player.add( heart );
+
+        const canSprite   = new THREE.TextureLoader().load( "/resources/sprites/can.png" );
+        const canMaterial = new THREE.SpriteMaterial( { map: canSprite } );
+        
+        const can = new THREE.Sprite( canMaterial );
+        can.position.set(0.55, 1.55, 2);
+        can.scale.setScalar(0.3);
+        this.player.add( can );
+
+        //
+        
         this.cameraMatUpdateCallback = ThreeApplication.createPerspectiveCameraResizer(this.renderer, this.camera);
 
         window.addEventListener("resize", this.cameraMatUpdateCallback);

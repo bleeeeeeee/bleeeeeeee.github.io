@@ -73,6 +73,8 @@ export class MainMenuScene extends Framework.BaseScene {
             fontColor: "rgb(246, 246, 246)",
         });
 
+        this.creditsButton.userData = { URL: "https://github.com/bleeeeeeee/bleeeeeeee.github.io"};
+
         this.raycaster = new THREE.Raycaster();
         this.mousePosition = new THREE.Vector2();
       
@@ -125,7 +127,8 @@ export class MainMenuScene extends Framework.BaseScene {
             }
 
             if (intersectsCreditsButton.length) {
-                // this.sceneManager.setCurrent("credits-scene");
+                window.open(this.creditsButton.userData.URL, "_blank");
+                //this.sceneManager.pop();
             }
       
         }

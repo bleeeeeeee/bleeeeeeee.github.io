@@ -65,12 +65,12 @@ export class Player extends THREE.Object3D {
             if(this.animationMixer) {
                 this.animationMixer.update(time);
             }
+            this.position.x = 0;
             this.position.z -= distance;
         }
 
-        if (KeyHandler.isKeyPressed("s")) this.position.z += distance;
-        if (KeyHandler.isKeyPressed("a")) this.position.x -= distance;
-        if (KeyHandler.isKeyPressed("d")) this.position.x += distance;
+        if (KeyHandler.isKeyPressed("a")) this.position.x = -2;
+        if (KeyHandler.isKeyPressed("d")) this.position.x = 2;
 
         if (KeyHandler.isKeyPressed("l") && this.timeElapsedFlashlight >= 1) {
             this.flashlight.visible = !this.flashlight.visible;
