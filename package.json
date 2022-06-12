@@ -11,6 +11,7 @@
         "test": "echo No tests available"
     },
     "dependencies": {
+        "detect-gpu": "^4.0.26",
         "postprocessing": "^6.27.0",
         "three": "^0.141.0",
         "ts-md5": "^1.2.11"
@@ -21,7 +22,7 @@
         "@typescript-eslint/parser": "^5.27.0",
         "eslint": "^8.16.0",
         "typescript": "^4.7.2",
-        "vite": "^2.9.9",
+        "vite": "^2.9.12",
         "vite-plugin-glsl": "^0.1.2"
     }
 }
