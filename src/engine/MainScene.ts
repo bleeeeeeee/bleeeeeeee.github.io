@@ -41,6 +41,9 @@ export class MainScene extends Framework.BaseScene {
     private readonly rocks: Rocks;
     private readonly lamps: PhysicalLamps;
 
+    private readonly stars: THREE.Group[] = [];
+    private readonly cans: THREE.Group[] = [];
+
     private readonly player: Player;
 
     private readonly OBJLoader1: OBJLoader = new OBJLoader();
@@ -120,51 +123,37 @@ export class MainScene extends Framework.BaseScene {
 
         // STARS //
 
+        const randomElem = <T>(elements: T[]): T =>
+            elements[Math.floor(Math.random() * elements.length)];
+
         const starLight = new THREE.SpotLight("rgb(120, 120, 82)", 30, 3, Math.PI, 2, 0.75);
 
-        this.MTLLoader.load( 
-
+        this.MTLLoader.load(
             "/resources/objects/_stars/star.mtl", 
-            
-            ( starMaterial: MTLLoader.MaterialCreator ) => {
+            (starMaterial: MTLLoader.MaterialCreator) => {
 
 				starMaterial.preload();
-
-				this.OBJLoader1.setMaterials( starMaterial ),
+				this.OBJLoader1.setMaterials(starMaterial);
 
                 this.OBJLoader1.load(
-                
                     "/resources/objects/_stars/star.obj",
-
-                    ( star: THREE.Group ) => {
+                    (star: THREE.Group) => {
                     
-                        star.position.set(0, 0.75, 0);
                         star.scale.setScalar(0.2);
         
-                        for(let i = 215; i > -190; i -= 25) {
-                            const Random100 = Math.random();
-                            const _starClone = star.clone();
-                            const _starLightClone = starLight.clone();
+                        for (let i = 215; i > -190; i -= 25) {
 
-                            _starClone.position.set(0, 0.75, i);
-                            _starLightClone.position.set(0, 2, i);
+                            const starClone = star.clone();
+                            starClone.position.set(randomElem([-2, 0, 2]), 0.75, i);
 
-                            if(Random100 < 0.33) {
-                                _starClone.position.x = _starLightClone.position.x = 2;
-                                this.add(_starClone, _starLightClone);
-                            } else if(Random100 > 0.67) {
-                                _starClone.position.x = _starLightClone.position.x = -2;
-                                this.add(_starClone, _starLightClone);
-                            } else {
-                                _starClone.position.x = _starLightClone.position.x = 0;
-                                this.add(_starClone, _starLightClone);
-                            }
+                            this.add(starClone);
+                            starClone.add(starLight.clone());
                         }
         
                     },
                 
-                    ( event: ProgressEvent ) => { console.log((event.loaded / event.total) * 100 + "% loaded"); },
-                    ( event: ErrorEvent ) => { console.log(event); }
+                    () => {},
+                    (event: ErrorEvent) => console.error(event)
                 );
             }
         );
@@ -187,16 +176,16 @@ export class MainScene extends Framework.BaseScene {
                 
                     "/resources/objects/_can/can.obj",
 
-                    ( star: THREE.Group ) => {
+                    ( can: THREE.Group ) => {
                     
-                        star.position.set(0, 0.8, 0);
-                        star.scale.setScalar(0.75);
+                        can.position.set(0, 0.8, 0);
+                        can.scale.setScalar(0.75);
                         
                         let change = Math.random() * (35 - 25) + 25;
 
                         for(let i = 185; i > -210; i -= change) {
                             const Random100 = Math.random();
-                            const _canClone = star.clone();
+                            const _canClone = can.clone();
                             const _canLightClone = canLight.clone();
 
                             _canClone.position.set(0, 0, i);

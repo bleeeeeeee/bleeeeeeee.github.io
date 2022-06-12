@@ -76,7 +76,7 @@ export class MainMenuScene extends Framework.BaseScene {
         this.raycaster = new THREE.Raycaster();
         this.mousePosition = new THREE.Vector2();
       
-        this.pointLight = new THREE.PointLight(0xffffff, 1, 0);
+        this.pointLight = new THREE.PointLight(0xffffff, 3, 0);
         this.pointLight.position.set(0, 0, 5);
         this.add(this.pointLight);
 
@@ -129,6 +129,7 @@ export class MainMenuScene extends Framework.BaseScene {
             }
       
         }
+
     };
 
     public onRender = (params: Framework.RenderParameters) => {

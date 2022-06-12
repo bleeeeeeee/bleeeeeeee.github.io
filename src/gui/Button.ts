@@ -35,11 +35,10 @@ export class Button extends THREE.Group {
         this.shape.position.copy(params.position);
         this.add(this.shape);
 
-        const shapePositions = shapeGeometry.attributes["position"];
-        for (let i = 0; i < shapePositions.count; ++i) {
+        const verticesPositions = shapeGeometry.attributes["position"];
+        for (let i = 2; i < verticesPositions.count; i += 3) {
 
-            if (i % 2) continue;
-            shapePositions.setZ(i, shapePositions.getZ(i) - Math.random() / 10);
+            verticesPositions.setZ(i, verticesPositions.getZ(i) - Math.random() / 10);
 
         }
 
@@ -49,7 +48,6 @@ export class Button extends THREE.Group {
 
         const fontLoader = new FontLoader();
         fontLoader.load(
-            // "node_modules/three/examples/fonts/optimer_bold.typeface.json",
             "/resources/fonts/optimer_bold.typeface.json",
             (font: Font) => {
 
@@ -58,7 +56,7 @@ export class Button extends THREE.Group {
                     size: 0.10,
                     font: font,
                 });
-                const textMaterial = new THREE.MeshBasicMaterial({
+                const textMaterial = new THREE.MeshStandardMaterial({
                     color: 0xffffff,
                 });
 
