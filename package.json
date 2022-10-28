@@ -12,7 +12,7 @@
     },
     "dependencies": {
         "detect-gpu": "^4.0.26",
-        "postprocessing": "^6.27.0",
+        "postprocessing": "^6.29.1",
         "three": "^0.141.0",
         "ts-md5": "^1.2.11"
     },
